@@ -18,6 +18,7 @@ export default function RootLayout({
         <header className="bg-white shadow p-4">
           <div className="container mx-auto">
             <h1 className="text-2xl font-bold">🎮 Game Catalogue</h1>
+            <h2></h2>
           </div>
         </header>
         <main className="container mx-auto p-4">{children}</main>
