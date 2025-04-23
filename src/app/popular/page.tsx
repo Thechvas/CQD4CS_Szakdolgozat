@@ -1,52 +1,23 @@
-'use client';
+// app/popular/page.tsx
+import GameCard from "@/components/GameCard";
+import { getPopularSteamGames } from "@/lib/igdb-utils";
 
-import { useEffect, useState } from 'react';
-
-interface Game {
-  id: number;
-  name: string;
-  summary?: string;
-  cover?: {
-    url: string;
-  };
-}
-
-export default function SteamPopular() {
-  const [games, setGames] = useState<Game[]>([]);
-
-  useEffect(() => {
-    async function fetchGames() {
-      const res = await fetch('/api/popular');
-      const data = await res.json();
-      setGames(data);
-    }
-
-    fetchGames();
-  }, []);
+export default async function PopularPage() {
+  const games = await getPopularSteamGames(10);
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">🎮 Top Steam Games (24hr Peak Players)</h1>
-
+    <main className="p-6 max-w-7xl mx-auto">
+      <h1 className="text-4xl font-bold mb-8">🔥 Top 50 Steam Games</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {games.map((game) => (
-          <div key={game.id} className="bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition">
-            {game.cover && (
-              <img
-                src={game.cover.url.replace('//', 'https://')}
-                alt={game.name}
-                className="w-full h-auto object-cover"
-              />
-            )}
-            <div className="p-3">
-              <h2 className="text-base font-semibold">{game.name}</h2>
-              {game.summary && (
-                <p className="text-sm text-gray-500 mt-1">{game.summary.slice(0, 60)}...</p>
-              )}
-            </div>
-          </div>
+          <GameCard
+            key={game.id}
+            id={game.id}
+            name={game.name}
+            imageId={game.cover?.image_id}
+          />
         ))}
       </div>
-    </div>
+    </main>
   );
 }

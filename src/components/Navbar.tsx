@@ -10,11 +10,10 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
-  const categories = [
-    { name: "RPG", href: "/category/rpg" },
-    { name: "Shooter", href: "/category/shooter" },
-    { name: "Indie", href: "/category/indie" },
-    { name: "Strategy", href: "/category/strategy" },
+  const discover = [
+    { name: "Popular", href: "/popular" },
+    { name: "Top Rated", href: "/toprated" },
+    { name: "Recently Released", href: "/recentlyreleased" },
   ];
 
   return (
@@ -52,19 +51,19 @@ const Navbar = () => {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center space-x-1 hover:text-indigo-400"
               >
-                <span>Categories</span>
+                <span>Discover</span>
                 <ChevronDown size={16} />
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg z-50">
-                  {categories.map((cat) => (
+                  {discover.map((d) => (
                     <Link
-                      key={cat.name}
-                      href={cat.href}
+                      key={d.name}
+                      href={d.href}
                       className="block px-4 py-2 hover:bg-gray-700"
                       onClick={() => setDropdownOpen(false)}
                     >
-                      {cat.name}
+                      {d.name}
                     </Link>
                   ))}
                 </div>
@@ -146,14 +145,14 @@ const Navbar = () => {
 
           {/* Mobile Dropdown */}
           <div>
-            <span className="block py-2 font-semibold">Categories</span>
-            {categories.map((cat) => (
+            <span className="block py-2 font-semibold">Discover</span>
+            {discover.map((d) => (
               <Link
-                key={cat.name}
-                href={cat.href}
+                key={d.name}
+                href={d.href}
                 className="block pl-4 py-1 hover:text-indigo-400"
               >
-                {cat.name}
+                {d.name}
               </Link>
             ))}
           </div>

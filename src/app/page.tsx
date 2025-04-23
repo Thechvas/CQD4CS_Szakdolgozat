@@ -1,54 +1,39 @@
-'use client';
+import GameCard from "@/components/GameCard";
+import {
+  getTopRatedGames,
+  getMostPlayedGames,
+  getRecentlyReleasedGames,
+} from "@/lib/igdb-utils";
 
-import { useEffect, useState } from 'react';
+export default async function HomePage() {
+  const [topRated, mostPlayed, recentlyReleased] = await Promise.all([
+    getTopRatedGames(),
+    getMostPlayedGames(),
+    getRecentlyReleasedGames(),
+  ]);
 
-interface Game {
-  id: number;
-  name: string;
-  rating: number;
-  rating_count: number;
-  cover?: {
-    url: string;
-  };
-}
-
-export default function Home() {
-  const [games, setGames] = useState<Game[]>([]);
-
-  useEffect(() => {
-    async function fetchGames() {
-      const res = await fetch('/api/igdb');
-      const data = await res.json();
-      setGames(data);
-    }
-
-    fetchGames();
-  }, []);
+  const Section = ({ title, games }: { title: string; games: any[] }) => (
+    <section className="mb-12">
+      <h2 className="text-2xl font-semibold mb-4">{title}</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+        {games.map((game) => (
+          <GameCard
+            key={game.id}
+            id={game.id}
+            name={game.name}
+            imageId={game.cover?.image_id}
+          />
+        ))}
+      </div>
+    </section>
+  );
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">🎯 Top Rated Games</h1>
-      <ul className="space-y-4">
-        {games.map((game) => (
-          <li key={game.id} className="flex items-center space-x-4">
-            {game.cover && (
-              <img
-                src={game.cover.url.replace('//', 'https://')}
-                alt={game.name}
-                width={100}
-                className="rounded"
-              />
-            )}
-            <div>
-              <p className="font-semibold">{game.name}</p>
-              <p className="text-sm text-gray-500">
-                Score: {Math.round(game.rating)} / 100<br />
-                Reviews: {game.rating_count}
-              </p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <main className="p-6 max-w-7xl mx-auto">
+      <h1 className="text-4xl font-bold mb-10">🎮 Welcome to GameVault</h1>
+      <Section title="🎯 Top Rated Games" games={topRated} />
+      <Section title="🔥 Most Played Games" games={mostPlayed} />
+      <Section title="🆕 Recently Released Games" games={recentlyReleased} />
+    </main>
   );
 }
