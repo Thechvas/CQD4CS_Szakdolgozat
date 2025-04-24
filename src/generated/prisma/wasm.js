@@ -122,8 +122,34 @@ exports.Prisma.UserScalarFieldEnum = {
   username: 'username',
   email: 'email',
   password: 'password',
+  profilePic: 'profilePic',
+  country: 'country',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  text: 'text',
+  rating: 'rating',
+  createdAt: 'createdAt',
+  userId: 'userId',
+  gameId: 'gameId'
+};
+
+exports.Prisma.ListScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  userId: 'userId',
+  gameIds: 'gameIds'
+};
+
+exports.Prisma.FollowsScalarFieldEnum = {
+  followerId: 'followerId',
+  followingId: 'followingId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -136,9 +162,17 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Review: 'Review',
+  List: 'List',
+  Follows: 'Follows'
 };
 
 /**

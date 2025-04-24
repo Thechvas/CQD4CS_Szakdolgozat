@@ -13,7 +13,6 @@ export async function POST(req: Request) {
 
   try {
     const { username, email, password } = body;
-    console.log({ username, email, password });
 
     if (!username || !email || !password) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });

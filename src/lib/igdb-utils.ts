@@ -1,23 +1,46 @@
 import { fetchFromIGDB } from "./igdb";
 import { IGDBGame } from "@/types";
 
-export async function getPopularSteamGames(limit: number = 10): Promise<IGDBGame[]> {
-    const primitives = await fetchFromIGDB("popularity_primitives", `
-      fields game_id, value;
-      sort value desc;
-      where popularity_type = 9;
-      limit ${limit};
-    `);
-  
-    const gameIds = primitives.map((entry: any) => entry.game_id).join(",");
-    if (!gameIds) return [];
-  
-    return fetchFromIGDB("games", `
-      fields name, cover.image_id;
-      where id = (${gameIds});
-    `);
+function chunkArray<T>(arr: T[], size: number): T[][] {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
   }
-  
+  return chunks;
+}
+
+export async function getPopularSteamGames(limit: number = 50): Promise<IGDBGame[]> {
+  const overFetch = 100; // 🔥 Try fetching 100 primitives to safely get 50 valid ones
+
+  const primitives = await fetchFromIGDB("popularity_primitives", `
+    fields game_id, value;
+    sort value desc;
+    where popularity_type = 9;
+    limit ${overFetch};
+  `);
+
+  const gameIds: number[] = primitives.map((entry: any) => entry.game_id);
+  if (!gameIds.length) return [];
+
+  // Break into safe chunks for IGDB query
+  const chunks = chunkArray(gameIds, 20);
+
+  const chunkedResults = await Promise.all(
+    chunks.map((chunk) =>
+      fetchFromIGDB("games", `
+        fields id, name, cover.image_id;
+        where id = (${chunk.join(",")}) & cover != null;
+      `)
+    )
+  );
+
+  const allGames = chunkedResults.flat();
+
+  // 🧹 Slice to requested number after filtering out invalids
+  return allGames.slice(0, limit);
+}
+
+
 
 export async function getTopRatedGames(limit = 5): Promise<IGDBGame[]> {
   return fetchFromIGDB("games", `

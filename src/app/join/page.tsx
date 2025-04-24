@@ -70,7 +70,6 @@ export default function JoinPage() {
       });
 
       const data = await res.json();
-      console.log(data);
       if (res.ok) {
         router.push("/login");
       } else {
