@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import ReviewCard from "@/components/ReviewCard";
 
 interface UserProfilePageParams {
   params: {
@@ -82,11 +83,8 @@ export default async function UserProfilePage({
         {user.reviews.length > 0 ? (
           <ul className="space-y-2">
             {user.reviews.map((review) => (
-              <li key={review.id} className="border p-3 rounded bg-gray-50">
-                <p className="text-sm">{review.text}</p>
-                <p className="text-xs text-gray-500">
-                  Rating: {review.rating}/10 • Game ID: {review.gameId}
-                </p>
+              <li key={review.id}>
+                <ReviewCard review={review} />
               </li>
             ))}
           </ul>

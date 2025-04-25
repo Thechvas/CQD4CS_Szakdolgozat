@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
         hostname: 'flagcdn.com',
         pathname: '/w40/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.igdb.com',
+      },
     ],
   },
 };
