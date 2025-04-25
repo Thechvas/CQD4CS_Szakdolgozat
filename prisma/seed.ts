@@ -3,7 +3,6 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-// 50 provided game IDs
 const gameIds = [
   1372, 2165, 2903, 26128, 27789, 95118, 114795, 125174, 198506, 204538,
   7360, 18866, 21593, 36926, 117294, 119171, 125165, 125642, 127165, 132181,

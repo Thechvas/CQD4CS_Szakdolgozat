@@ -36,9 +36,21 @@ export default async function UserProfilePage({
         />
         <div>
           <h1 className="text-2xl font-bold">{user.username}</h1>
-          <p className="text-sm text-gray-600">
-            {user.country || "No country set"}
-          </p>
+          {user.country ? (
+            <p className="text-sm text-gray-600 flex items-center gap-2">
+              <Image
+                src={`https://flagcdn.com/w40/${user.country.toLowerCase()}.png`}
+                alt={`${user.country} flag`}
+                width={20}
+                height={15}
+                className="rounded-sm"
+              />
+              <span>{user.country}</span>
+            </p>
+          ) : (
+            <p className="text-sm text-gray-600">No country set</p>
+          )}
+
           <p className="text-sm text-gray-500">
             Followers: {user.followers.length} • Following:{" "}
             {user.following.length}
