@@ -54,7 +54,6 @@ model Follows {
   followingId String
   createdAt   DateTime @default(now())
 
-  // Relations
   follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
   following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
 

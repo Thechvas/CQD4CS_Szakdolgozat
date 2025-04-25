@@ -185,16 +185,17 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://neondb_owner:npg_GQpoOWwHYR36@ep-winter-morning-a2apn17c-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require"
+        "value": null
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id         String   @id @default(cuid())\n  username   String   @unique\n  email      String   @unique\n  password   String\n  profilePic String?\n  country    String?\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  reviews Review[]\n  lists   List[]\n\n  followers Follows[] @relation(\"following\")\n  following Follows[] @relation(\"follower\")\n}\n\nmodel Review {\n  id        String   @id @default(cuid())\n  text      String\n  rating    Int\n  createdAt DateTime @default(now())\n\n  userId String\n  user   User   @relation(fields: [userId], references: [id])\n\n  gameId Int\n}\n\nmodel List {\n  id          String   @id @default(cuid())\n  name        String\n  description String?\n  createdAt   DateTime @default(now())\n\n  userId String\n  user   User   @relation(fields: [userId], references: [id])\n\n  gameIds Int[]\n}\n\nmodel Follows {\n  followerId  String\n  followingId String\n  createdAt   DateTime @default(now())\n\n  // Relations\n  follower  User @relation(\"follower\", fields: [followerId], references: [id], onDelete: Cascade)\n  following User @relation(\"following\", fields: [followingId], references: [id], onDelete: Cascade)\n\n  @@id([followerId, followingId])\n  @@index([followerId, followingId])\n}\n",
-  "inlineSchemaHash": "9cc96a1f2af890651d0a489fc54c6141c9386c5827d87f4326a741a5f522f122",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id         String   @id @default(cuid())\n  username   String   @unique\n  email      String   @unique\n  password   String\n  profilePic String?\n  country    String?\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  reviews Review[]\n  lists   List[]\n\n  followers Follows[] @relation(\"following\")\n  following Follows[] @relation(\"follower\")\n}\n\nmodel Review {\n  id        String   @id @default(cuid())\n  text      String\n  rating    Int\n  createdAt DateTime @default(now())\n\n  userId String\n  user   User   @relation(fields: [userId], references: [id])\n\n  gameId Int\n}\n\nmodel List {\n  id          String   @id @default(cuid())\n  name        String\n  description String?\n  createdAt   DateTime @default(now())\n\n  userId String\n  user   User   @relation(fields: [userId], references: [id])\n\n  gameIds Int[]\n}\n\nmodel Follows {\n  followerId  String\n  followingId String\n  createdAt   DateTime @default(now())\n\n  follower  User @relation(\"follower\", fields: [followerId], references: [id], onDelete: Cascade)\n  following User @relation(\"following\", fields: [followingId], references: [id], onDelete: Cascade)\n\n  @@id([followerId, followingId])\n  @@index([followerId, followingId])\n}\n",
+  "inlineSchemaHash": "c71d45341e2432cc24da2867b8edef056c20289637dfddfc362de031290a1610",
   "copyEngine": true
 }
 config.dirname = '/'

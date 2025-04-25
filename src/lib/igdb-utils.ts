@@ -10,7 +10,7 @@ function chunkArray<T>(arr: T[], size: number): T[][] {
 }
 
 export async function getPopularSteamGames(limit: number = 50): Promise<IGDBGame[]> {
-  const overFetch = 100; // 🔥 Try fetching 100 primitives to safely get 50 valid ones
+  const overFetch = 100;
 
   const primitives = await fetchFromIGDB("popularity_primitives", `
     fields game_id, value;
@@ -22,7 +22,6 @@ export async function getPopularSteamGames(limit: number = 50): Promise<IGDBGame
   const gameIds: number[] = primitives.map((entry: any) => entry.game_id);
   if (!gameIds.length) return [];
 
-  // Break into safe chunks for IGDB query
   const chunks = chunkArray(gameIds, 20);
 
   const chunkedResults = await Promise.all(
@@ -36,7 +35,6 @@ export async function getPopularSteamGames(limit: number = 50): Promise<IGDBGame
 
   const allGames = chunkedResults.flat();
 
-  // 🧹 Slice to requested number after filtering out invalids
   return allGames.slice(0, limit);
 }
 

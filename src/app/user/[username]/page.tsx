@@ -2,13 +2,19 @@ import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-interface Props {
-  params: { username: string };
+interface UserProfilePageParams {
+  params: {
+    username: string;
+  };
 }
 
-export default async function UserProfilePage({ params }: Props) {
+export default async function UserProfilePage({
+  params,
+}: UserProfilePageParams) {
+  const { username } = await params;
+
   const user = await prisma.user.findUnique({
-    where: { username: params.username },
+    where: { username },
     include: {
       reviews: true,
       lists: true,
@@ -18,7 +24,6 @@ export default async function UserProfilePage({ params }: Props) {
   });
 
   if (!user) return notFound();
-
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
       <div className="flex items-center gap-4 mb-6">
