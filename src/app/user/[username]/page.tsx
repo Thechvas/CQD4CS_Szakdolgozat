@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import ReviewCard from "@/components/ReviewCard";
+import ListCard from "@/components/ListCard";
 
 interface UserProfilePageParams {
   params: {
@@ -62,14 +63,16 @@ export default async function UserProfilePage({
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Lists</h2>
         {user.lists.length > 0 ? (
-          <ul className="space-y-2">
+          <ul className="space-y-4">
             {user.lists.map((list) => (
-              <li key={list.id} className="border p-3 rounded bg-gray-50">
-                <h3 className="font-semibold">{list.name}</h3>
-                <p className="text-sm text-gray-600">{list.description}</p>
-                <p className="text-xs text-gray-500">
-                  Games: {list.gameIds.length}
-                </p>
+              <li key={list.id}>
+                <ListCard
+                  list={{
+                    ...list,
+                    createdAt: list.createdAt.toISOString(),
+                    description: list.description || "No description available",
+                  }}
+                />
               </li>
             ))}
           </ul>
