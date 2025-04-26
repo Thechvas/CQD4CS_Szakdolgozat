@@ -15,10 +15,18 @@ export default function GameCard({ id, name, imageId }: GameCardProps) {
 
   return (
     <Link href={`/game/${id}`}>
-      <div className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-200 bg-white cursor-pointer">
-        <img src={imageUrl} alt={name} className="w-full h-72 object-cover" />
-        <div className="p-4">
-          <h2 className="text-lg font-semibold text-center truncate">{name}</h2>
+      <div className="w-40 sm:w-48 flex flex-col rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-200 bg-white cursor-pointer">
+        <div className="h-60">
+          <img
+            src={imageUrl}
+            alt={name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="flex items-center justify-center p-3 h-20">
+          <h2 className="text-sm sm:text-base font-semibold text-center line-clamp-2">
+            {name}
+          </h2>
         </div>
       </div>
     </Link>
