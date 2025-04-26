@@ -25,22 +25,16 @@ export default function ListCard({ list }: ListCardProps) {
 
   useEffect(() => {
     async function fetchGames() {
-      const promises = list.gameIds.slice(0, 10).map(async (gameId) => {
-        const res = await fetch(`/api/games/${gameId}`);
-        if (!res.ok) {
-          console.error(`Failed to fetch game ${gameId}`);
-          return null;
-        }
-        const data = await res.json();
-        return {
-          id: gameId,
-          name: data.name,
-          coverUrl: data.coverUrl,
-        };
-      });
+      if (list.gameIds.length === 0) return;
 
-      const results = await Promise.all(promises);
-      setGames(results.filter((game) => game !== null) as GameInfo[]);
+      const idsParam = list.gameIds.slice(0, 10).join(",");
+      const res = await fetch(`/api/games/batch?ids=${idsParam}`);
+      if (!res.ok) {
+        console.error(`Failed to fetch games`);
+        return;
+      }
+      const data = await res.json();
+      setGames(data);
     }
 
     fetchGames();

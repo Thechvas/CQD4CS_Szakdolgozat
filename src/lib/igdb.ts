@@ -31,16 +31,27 @@ async function getAccessToken(): Promise<string> {
 export async function fetchFromIGDB(endpoint: string, query: string) {
   const token = await getAccessToken();
 
-  const res = await fetch(`https://api.igdb.com/v4/${endpoint}`, {
-    method: "POST",
-    headers: {
-      "Client-ID": IGDB_CLIENT_ID,
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: query,
-  });
+  try {
+    const res = await fetch(`https://api.igdb.com/v4/${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Client-ID": IGDB_CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: query,
+    });
 
-  if (!res.ok) throw new Error(`IGDB fetch failed with status ${res.status}`);
-  return res.json();
+    if (!res.ok) {
+      const errorBody = await res.text();
+      console.error(`IGDB error response: ${errorBody}`);
+      throw new Error(`IGDB fetch failed with status ${res.status}`);
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error('Failed to fetch from IGDB:', error);
+    throw new Error('Failed to fetch from IGDB');
+  }
 }
+

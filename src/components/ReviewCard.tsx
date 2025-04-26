@@ -14,6 +14,7 @@ interface ReviewCardProps {
 }
 
 interface GameInfo {
+  id: number;
   name: string;
   coverUrl: string;
 }
@@ -23,13 +24,19 @@ export default function ReviewCard({ review }: ReviewCardProps) {
 
   useEffect(() => {
     async function fetchGame() {
-      const res = await fetch(`/api/games/${review.gameId}`);
+      if (!review.gameId) return;
+
+      const res = await fetch(`/api/games/batch?ids=${review.gameId}`);
       if (!res.ok) {
         console.error("Game not found for ID:", review.gameId);
         return;
       }
       const data = await res.json();
-      setGame(data);
+      if (data.length > 0) {
+        setGame(data[0]);
+      } else {
+        console.error("Game not found for ID:", review.gameId);
+      }
     }
 
     fetchGame();

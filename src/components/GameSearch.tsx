@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import debounce from "lodash.debounce";
-import Image from "next/image";
 import { X } from "lucide-react";
+import ImageWrapper from "./ImageWrapper";
 
 export default function GameSearch() {
   const [query, setQuery] = useState("");
@@ -119,18 +119,20 @@ export default function GameSearch() {
                 className="flex items-center p-2 hover:bg-gray-800 rounded-md cursor-pointer"
               >
                 {game.cover ? (
-                  <Image
-                    src={`https://images.igdb.com/igdb/image/upload/t_cover_small/${game.cover.image_id}.jpg`}
-                    alt={game.name}
-                    width={50}
-                    height={70}
-                    className="rounded-md mr-4"
-                  />
+                  <div className="mr-4">
+                    <ImageWrapper
+                      src={`https://images.igdb.com/igdb/image/upload/t_cover_small/${game.cover.image_id}.jpg`}
+                      alt={game.name}
+                      width={50}
+                      height={70}
+                    />
+                  </div>
                 ) : (
                   <div className="w-[50px] h-[70px] bg-gray-700 flex items-center justify-center rounded-md text-xs text-gray-400 mr-4">
                     No Image
                   </div>
                 )}
+
                 <span className="text-white font-medium truncate">
                   {game.name}
                 </span>
