@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import ImageWrapper from "./ImageWrapper";
 
 interface ListCardProps {
   list: {
@@ -59,12 +59,11 @@ export default function ListCard({ list }: ListCardProps) {
         {games.length > 0 ? (
           games.map((game) => (
             <Link key={game.id} href={`/game/${game.id}`} className="shrink-0">
-              <Image
+              <ImageWrapper
                 src={game.coverUrl}
                 alt={game.name}
                 width={64}
                 height={90}
-                className="rounded-md object-cover"
               />
             </Link>
           ))

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+
 export default async function TopMembersPage() {
   const topMembers = await prisma.user.findMany({
     take: 10,
@@ -38,6 +39,7 @@ export default async function TopMembersPage() {
                 alt={user.username}
                 fill
                 className="rounded-full object-cover"
+                sizes="64px"
               />
             </div>
             <div>

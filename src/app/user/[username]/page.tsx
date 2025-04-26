@@ -1,8 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import Image from "next/image";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
+import Image from "next/image";
+import FollowButton from "@/components/FollowButton";
 import ReviewCard from "@/components/ReviewCard";
 import ListCard from "@/components/ListCard";
+import UserCountry from "@/components/UserCountry";
 
 interface UserProfilePageParams {
   params: {
@@ -15,6 +19,8 @@ export default async function UserProfilePage({
 }: UserProfilePageParams) {
   const { username } = await params;
 
+  const session = await getServerSession(authOptions);
+
   const user = await prisma.user.findUnique({
     where: { username },
     include: {
@@ -26,6 +32,11 @@ export default async function UserProfilePage({
   });
 
   if (!user) return notFound();
+
+  const isFollowing = user.followers.some(
+    (follower) => follower.followerId === session?.user?.id
+  );
+
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
       <div className="flex items-center gap-4 mb-6">
@@ -36,24 +47,25 @@ export default async function UserProfilePage({
           height={64}
           className="rounded-full object-cover"
         />
-        <div>
-          <h1 className="text-2xl font-bold">{user.username}</h1>
+
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold">{user.username}</h1>
+
+            {session?.user?.id && session.user.id !== user.id && (
+              <FollowButton userId={user.id} isFollowingInitial={isFollowing} />
+            )}
+          </div>
+
           {user.country ? (
-            <p className="text-sm text-gray-600 flex items-center gap-2">
-              <Image
-                src={`https://flagcdn.com/w40/${user.country.toLowerCase()}.png`}
-                alt={`${user.country} flag`}
-                width={20}
-                height={15}
-                className="rounded-sm"
-              />
-              <span>{user.country}</span>
+            <p className="text-sm text-gray-600 mt-1">
+              <UserCountry countryCode={user.country} />
             </p>
           ) : (
-            <p className="text-sm text-gray-600">No country set</p>
+            <p className="text-sm text-gray-600 mt-1">No country set</p>
           )}
 
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 mt-1">
             Followers: {user.followers.length} • Following:{" "}
             {user.following.length}
           </p>

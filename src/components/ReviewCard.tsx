@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import ImageWrapper from "./ImageWrapper";
 
 interface ReviewCardProps {
   review: {
@@ -39,12 +39,11 @@ export default function ReviewCard({ review }: ReviewCardProps) {
     <div className="border p-3 rounded bg-gray-50 flex gap-4 items-start">
       {game?.coverUrl ? (
         <Link href={`/game/${review.gameId}`} className="shrink-0">
-          <Image
+          <ImageWrapper
             src={game.coverUrl}
             alt={game.name || "Game Cover"}
             width={64}
             height={90}
-            className="rounded-md object-cover"
           />
         </Link>
       ) : (
