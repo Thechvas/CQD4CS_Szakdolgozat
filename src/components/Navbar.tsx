@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import GameSearch from "./GameSearch";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +17,7 @@ const Navbar = () => {
     { name: "Recently Released", href: "/recently-released" },
   ];
 
-  const username = session?.user?.name; // assuming username is stored in .name
+  const username = session?.user?.name;
 
   return (
     <nav className="bg-gray-900 text-white shadow-md z-50">
@@ -30,13 +30,8 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Search Bar */}
           <div className="hidden md:block flex-grow mx-6">
-            <input
-              type="text"
-              placeholder="Search games..."
-              className="w-full px-4 py-2 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+            <GameSearch />
           </div>
 
           {/* Desktop Menu */}
@@ -116,11 +111,7 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden px-4 pb-4 space-y-4">
-          <input
-            type="text"
-            placeholder="Search games..."
-            className="w-full px-4 py-2 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+          <GameSearch />
 
           <div>
             <span className="block py-2 font-semibold">Discover</span>
