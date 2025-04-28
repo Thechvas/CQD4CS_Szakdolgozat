@@ -39,37 +39,50 @@ export default async function UserProfilePage({
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-      <div className="flex items-center gap-4 mb-6">
-        <Image
-          src={user.profilePic || "/default_profile.jpg"}
-          alt="Profile picture"
-          width={64}
-          height={64}
-          className="rounded-full object-cover"
-        />
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Image
+            src={user.profilePic || "/default_profile.jpg"}
+            alt="Profile picture"
+            width={64}
+            height={64}
+            className="rounded-full object-cover"
+          />
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold">{user.username}</h1>
 
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold">{user.username}</h1>
+              {session?.user?.id && session.user.id !== user.id && (
+                <FollowButton
+                  userId={user.id}
+                  isFollowingInitial={isFollowing}
+                />
+              )}
+            </div>
 
-            {session?.user?.id && session.user.id !== user.id && (
-              <FollowButton userId={user.id} isFollowingInitial={isFollowing} />
+            {user.country ? (
+              <p className="text-sm text-gray-600 mt-1">
+                <UserCountry countryCode={user.country} />
+              </p>
+            ) : (
+              <p className="text-sm text-gray-600 mt-1">No country set</p>
             )}
-          </div>
 
-          {user.country ? (
-            <p className="text-sm text-gray-600 mt-1">
-              <UserCountry countryCode={user.country} />
+            <p className="text-sm text-gray-500 mt-1">
+              Followers: {user.followers.length} • Following:{" "}
+              {user.following.length}
             </p>
-          ) : (
-            <p className="text-sm text-gray-600 mt-1">No country set</p>
-          )}
-
-          <p className="text-sm text-gray-500 mt-1">
-            Followers: {user.followers.length} • Following:{" "}
-            {user.following.length}
-          </p>
+          </div>
         </div>
+
+        {session?.user?.id === user.id && (
+          <a
+            href={`/user/${user.username}/edit`}
+            className="text-blue-500 hover:underline text-sm font-medium"
+          >
+            ✏️ Edit Profile
+          </a>
+        )}
       </div>
 
       <div className="mb-6">
