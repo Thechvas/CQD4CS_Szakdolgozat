@@ -1,9 +1,12 @@
 import { fetchFromIGDB } from "@/lib/igdb";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import GameDetails from "@/components/GameDetails";
-import { IGDBGame } from "@/types";
 import ReviewCardForGame from "@/components/ReviewCardForGame";
+import { IGDBGame } from "@/types";
+import ReviewFormForGameWrapper from "@/components/ReviewFormForGameWrapper";
 
 export default async function GamePage({
   params,
@@ -19,6 +22,7 @@ export default async function GamePage({
     where id = ${gameId};
   `
   );
+
   const game = data[0];
   if (!game) return notFound();
 
@@ -36,9 +40,31 @@ export default async function GamePage({
     },
   });
 
+  const session = await getServerSession(authOptions);
+  let userReview = null;
+
+  if (session?.user?.email) {
+    userReview = await prisma.review.findFirst({
+      where: {
+        user: {
+          email: session.user.email,
+        },
+        gameId: Number(gameId),
+      },
+    });
+  }
+
   return (
     <main className="p-6 max-w-5xl mx-auto">
       <GameDetails game={game} />
+
+      <section className="mt-10">
+        {session && (
+          <section className="mt-10">
+            <ReviewFormForGameWrapper gameId={Number(gameId)} />
+          </section>
+        )}
+      </section>
 
       <section className="mt-10">
         <h2 className="text-2xl font-bold mb-4">User Reviews</h2>
