@@ -14,6 +14,8 @@ export default function GameSearch() {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
 
+  let currentRequestId = 0;
+
   useEffect(() => {
     if (query.length === 0) {
       setResults([]);
@@ -22,6 +24,7 @@ export default function GameSearch() {
     }
 
     const fetchGames = async () => {
+      const requestId = ++currentRequestId;
       setLoading(true);
       try {
         const res = await fetch("/api/search", {
@@ -33,10 +36,37 @@ export default function GameSearch() {
         });
 
         const data = await res.json();
-        setResults(data);
+
+        if (requestId !== currentRequestId) {
+          return;
+        }
+
+        if (!Array.isArray(data)) {
+          console.error("Invalid data from search:", data);
+          setResults([]);
+          setLoading(false);
+          return;
+        }
+
+        const normalizedQuery = query.trim().toLowerCase();
+        const exactMatches = data.filter(
+          (game: any) => game.name.trim().toLowerCase() === normalizedQuery
+        );
+        const startsWithMatches = data.filter(
+          (game: any) =>
+            game.name.trim().toLowerCase().startsWith(normalizedQuery) &&
+            game.name.trim().toLowerCase() !== normalizedQuery
+        );
+        const otherMatches = data.filter(
+          (game: any) =>
+            !game.name.trim().toLowerCase().startsWith(normalizedQuery)
+        );
+
+        setResults([...exactMatches, ...startsWithMatches, ...otherMatches]);
         setShowResults(true);
       } catch (err) {
         console.error(err);
+        setResults([]);
       }
       setLoading(false);
     };
