@@ -14,7 +14,6 @@ export default async function EditProfilePage({
   params,
 }: EditProfilePageParams) {
   const session = await getServerSession(authOptions);
-
   if (!session) redirect("/api/auth/signin");
 
   const { username } = await params;
@@ -23,9 +22,7 @@ export default async function EditProfilePage({
     where: { username },
   });
 
-  if (!user || session.user.id !== user.id) {
-    return notFound();
-  }
+  if (!user || session.user.id !== user.id) return notFound();
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">

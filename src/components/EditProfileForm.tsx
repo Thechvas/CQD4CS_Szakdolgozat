@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Select from "react-select";
 import countries from "world-countries";
+import { UploadButton } from "@/lib/uploadthing";
 
 interface EditProfileFormProps {
   user: {
@@ -16,22 +17,17 @@ interface EditProfileFormProps {
 
 export default function EditProfileForm({ user }: EditProfileFormProps) {
   const [country, setCountry] = useState(user.country || "");
-  const [profilePic, setProfilePic] = useState<File | null>(null);
-  const [isClient, setIsClient] = useState(false); // 👈 NEW
+  const [profilePicUrl, setProfilePicUrl] = useState(user.profilePic || "");
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  useEffect(() => setIsClient(true), []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("country", country);
-    if (profilePic) {
-      formData.append("profilePic", profilePic);
-    }
+    formData.append("profilePicUrl", profilePicUrl);
 
     await fetch(`/api/user/${user.username}/edit`, {
       method: "POST",
@@ -51,10 +47,9 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
   const defaultCountry = countryOptions.find((opt) => opt.value === country);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label className="block text-sm font-medium mb-1">Country</label>
-
         {isClient && (
           <Select
             options={countryOptions}
@@ -73,10 +68,7 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
               </div>
             )}
             styles={{
-              option: (provided) => ({
-                ...provided,
-                padding: 10,
-              }),
+              option: (provided) => ({ ...provided, padding: 10 }),
               control: (provided) => ({
                 ...provided,
                 padding: 4,
@@ -87,16 +79,36 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
         )}
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">
-          Profile Picture
-        </label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setProfilePic(e.target.files?.[0] || null)}
-          className="w-full border rounded-md p-2"
-        />
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">Profile Picture</label>
+
+        {profilePicUrl ? (
+          <div className="flex flex-col items-start gap-2">
+            <img
+              src={profilePicUrl}
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover border"
+            />
+            <button
+              type="button"
+              onClick={() => setProfilePicUrl("")}
+              className="text-red-500 text-sm"
+            >
+              Remove Picture
+            </button>
+          </div>
+        ) : (
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              console.log("Upload complete:", res);
+              setProfilePicUrl(res?.[0]?.ufsUrl || "");
+            }}
+            onUploadError={(error: Error) => {
+              console.error("Upload error:", error.message);
+            }}
+          />
+        )}
       </div>
 
       <button

@@ -2,11 +2,11 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import FollowButton from "@/components/FollowButton";
 import ReviewCard from "@/components/ReviewCard";
 import ListCard from "@/components/ListCard";
 import UserCountry from "@/components/UserCountry";
+import ImageWrapper from "@/components/ImageWrapper";
 
 interface UserProfilePageParams {
   params: {
@@ -41,12 +41,11 @@ export default async function UserProfilePage({
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Image
+          <ImageWrapper
             src={user.profilePic || "/default_profile.jpg"}
             alt="Profile picture"
             width={64}
             height={64}
-            className="rounded-full object-cover"
           />
           <div className="flex-1">
             <div className="flex items-center gap-2">
