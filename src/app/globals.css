@@ -243,3 +243,8 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.uploadthing-hidden-input input[type="file"] {
+  display: none !important;
+}
+

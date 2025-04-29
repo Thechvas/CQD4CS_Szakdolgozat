@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Select from "react-select";
 import countries from "world-countries";
+import toast from "react-hot-toast";
 import { UploadButton } from "@/lib/uploadthing";
+import ProfilePictureUpload from "./ProfilePictureUpload";
 
 interface EditProfileFormProps {
   user: {
@@ -18,6 +20,7 @@ interface EditProfileFormProps {
 export default function EditProfileForm({ user }: EditProfileFormProps) {
   const [country, setCountry] = useState(user.country || "");
   const [profilePicUrl, setProfilePicUrl] = useState(user.profilePic || "");
+  const [progress, setProgress] = useState(0);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
@@ -79,44 +82,21 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
         )}
       </div>
 
-      <div className="space-y-2">
-        <label className="block text-sm font-medium">Profile Picture</label>
-
-        {profilePicUrl ? (
-          <div className="flex flex-col items-start gap-2">
-            <img
-              src={profilePicUrl}
-              alt="Profile"
-              className="w-24 h-24 rounded-full object-cover border"
-            />
-            <button
-              type="button"
-              onClick={() => setProfilePicUrl("")}
-              className="text-red-500 text-sm"
-            >
-              Remove Picture
-            </button>
-          </div>
-        ) : (
-          <UploadButton
-            endpoint="imageUploader"
-            onClientUploadComplete={(res) => {
-              console.log("Upload complete:", res);
-              setProfilePicUrl(res?.[0]?.ufsUrl || "");
-            }}
-            onUploadError={(error: Error) => {
-              console.error("Upload error:", error.message);
-            }}
-          />
-        )}
+      <div className="space-y-4">
+        <ProfilePictureUpload
+          value={profilePicUrl}
+          onChange={setProfilePicUrl}
+        />
       </div>
 
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
-        Save Changes
-      </button>
+      <div className="flex justify-center pt-6">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 shadow"
+        >
+          Save Changes
+        </button>
+      </div>
     </form>
   );
 }
