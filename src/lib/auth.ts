@@ -3,38 +3,44 @@ import { prisma } from "@/lib/prisma";
 import { type NextAuthOptions, type Session } from "next-auth";
 
 declare module "next-auth" {
-    interface Session {
-        user: {
-            id: string;
-            name?: string | null;
-            email?: string | null;
-            image?: string | null;
-        };
-    }
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+
+  interface User {
+    username?: string | null;
+  }
 }
 
 export const authOptions: NextAuthOptions = {
-    adapter: PrismaAdapter(prisma),
-    session: {
-        strategy: "jwt",
+  adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+  },
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.sub as string;
+        session.user.name = token.username as string;
+      }
+      return session;
     },
-    callbacks: {
-        async session({ session, token, user }) {
-            if (session.user) {
-                session.user.id = token.sub || user.id;
-            }
-            return session;
-        },
-        async jwt({ token, user }) {
-            if (user) {
-                token.id = user.id;
-            }
-            return token;
-        },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.username = (user as any).username;
+      }
+      return token;
     },
-    pages: {
-        signIn: "/auth/signin",
-    },
-    secret: process.env.NEXTAUTH_SECRET,
-    providers: []
+  },
+  pages: {
+    signIn: "/auth/signin",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  providers: [],
 };

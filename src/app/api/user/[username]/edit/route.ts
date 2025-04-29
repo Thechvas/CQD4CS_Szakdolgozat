@@ -14,6 +14,7 @@ export async function POST(
   const { username } = await params;
 
   const formData = await req.formData();
+  const newUsername = formData.get("username") as string | null;
   const country = formData.get("country") as string | null;
   const profilePicUrl = formData.get("profilePicUrl") as string | null;
 
@@ -22,14 +23,29 @@ export async function POST(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  if (newUsername && newUsername !== user.username) {
+    const existing = await prisma.user.findUnique({
+      where: { username: newUsername },
+    });
+
+    if (existing) {
+      return NextResponse.json(
+        { error: "Username is already taken." },
+        { status: 409 }
+      );
+    }
+  }
+
   try {
     await prisma.user.update({
       where: { id: session.user.id },
       data: {
+        username: newUsername ?? user.username,
         country: country || null,
         profilePic: profilePicUrl || null,
       },
     });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Profile update failed:", error);
