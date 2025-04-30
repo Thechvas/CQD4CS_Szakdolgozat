@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -9,15 +9,33 @@ import GameSearch from "./GameSearch";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
 
   const discover = [
     { name: "Popular", href: "/popular" },
     { name: "Top Rated", href: "/top-rated" },
+    { name: "Most Played", href: "/games/most-played" },
     { name: "Recently Released", href: "/recently-released" },
   ];
 
   const username = session?.user?.username;
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav className="bg-gray-900 text-white shadow-md z-50">
@@ -37,16 +55,16 @@ const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
             {/* Dropdown */}
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={() => setDropdownOpen((prev) => !prev)}
                 className="flex items-center space-x-1 hover:text-indigo-400"
               >
                 <span>Discover</span>
                 <ChevronDown size={16} />
               </button>
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-50">
                   {discover.map((d) => (
                     <Link
                       key={d.name}

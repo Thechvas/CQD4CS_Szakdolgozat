@@ -1,3 +1,4 @@
+import Link from "next/link";
 import GameCard from "@/components/GameCard";
 import WelcomeBanner from "@/components/WelcomeBanner";
 import {
@@ -13,9 +14,25 @@ export default async function HomePage() {
     getRecentlyReleasedGames(),
   ]);
 
-  const Section = ({ title, games }: { title: string; games: any[] }) => (
+  const Section = ({
+    title,
+    games,
+    link,
+  }: {
+    title: string;
+    games: any[];
+    link: string;
+  }) => (
     <section className="mb-12">
-      <h2 className="text-2xl font-semibold mb-4">{title}</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold">{title}</h2>
+        <Link
+          href={link}
+          className="text-blue-600 hover:underline text-base font-medium"
+        >
+          See More →
+        </Link>
+      </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {games.map((game) => (
           <GameCard
@@ -31,10 +48,18 @@ export default async function HomePage() {
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
-      <WelcomeBanner /> {/* ⬅️ This now handles welcome text perfectly */}
-      <Section title="🎯 Top Rated Games" games={topRated} />
-      <Section title="🔥 Most Played Games" games={mostPlayed} />
-      <Section title="🆕 Recently Released Games" games={recentlyReleased} />
+      <WelcomeBanner />
+      <Section title="🎯 Top Rated Games" games={topRated} link="/top-rated" />
+      <Section
+        title="🔥 Most Played Games"
+        games={mostPlayed}
+        link="/most-played"
+      />
+      <Section
+        title="🆕 Recently Released Games"
+        games={recentlyReleased}
+        link="/recently-released"
+      />
     </main>
   );
 }
