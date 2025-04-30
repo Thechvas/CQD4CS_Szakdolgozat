@@ -6,7 +6,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      name?: string | null;
+      username?: string | null;
       email?: string | null;
       image?: string | null;
     };
@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub as string;
-        session.user.name = token.username as string;
+        session.user.username = token.username as string;
       }
       return session;
     },

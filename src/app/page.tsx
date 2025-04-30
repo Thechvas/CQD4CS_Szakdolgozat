@@ -1,4 +1,5 @@
 import GameCard from "@/components/GameCard";
+import WelcomeBanner from "@/components/WelcomeBanner";
 import {
   getTopRatedGames,
   getMostPlayedGames,
@@ -29,8 +30,8 @@ export default async function HomePage() {
   );
 
   return (
-    <main className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold mb-10">🎮 Welcome to GameVault</h1>
+    <main className="max-w-7xl mx-auto px-6 py-12">
+      <WelcomeBanner /> {/* ⬅️ This now handles welcome text perfectly */}
       <Section title="🎯 Top Rated Games" games={topRated} />
       <Section title="🔥 Most Played Games" games={mostPlayed} />
       <Section title="🆕 Recently Released Games" games={recentlyReleased} />

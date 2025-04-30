@@ -17,7 +17,7 @@ const Navbar = () => {
     { name: "Recently Released", href: "/recently-released" },
   ];
 
-  const username = session?.user?.name;
+  const username = session?.user?.username;
 
   return (
     <nav className="bg-gray-900 text-white shadow-md z-50">

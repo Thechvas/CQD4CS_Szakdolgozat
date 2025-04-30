@@ -46,14 +46,14 @@ export const authOptions = {
     async jwt({ token, user }: { token: any; user?: User | AdapterUser }) {
       if (user) {
         token.id = user.id;
-        token.name = user.name ?? "";
+        token.username = user.username ?? "";
         token.email = user.email;
       } else {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id },
         });
         if (dbUser) {
-          token.name = dbUser.username;
+          token.username = dbUser.username;
         }
       }
       return token;
@@ -61,7 +61,7 @@ export const authOptions = {
     async session({ session, token }: { session: any; token: any }) {
       if (session.user) {
         session.user.id = token.id;
-        session.user.name = token.name;
+        session.user.username = token.username;
         session.user.email = token.email;
       }
       return session;
