@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Heart } from "lucide-react";
 import ImageWrapper from "./ImageWrapper";
 
 interface ReviewCardProps {
@@ -10,6 +11,7 @@ interface ReviewCardProps {
     text: string;
     rating: number;
     gameId: number;
+    createdAt: Date;
   };
 }
 
@@ -42,8 +44,17 @@ export default function ReviewCard({ review }: ReviewCardProps) {
     fetchGame();
   }, [review.gameId]);
 
+  const formattedDate = new Date(review.createdAt).toLocaleDateString(
+    undefined,
+    {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }
+  );
+
   return (
-    <div className="border p-3 rounded bg-gray-50 flex gap-4 items-start">
+    <div className="border p-3 rounded bg-gray-50 flex gap-4 items-start relative">
       {game?.coverUrl ? (
         <Link href={`/game/${review.gameId}`} className="shrink-0">
           <ImageWrapper
@@ -57,17 +68,24 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         <div className="w-[64px] h-[90px] bg-gray-300 rounded-md" />
       )}
 
-      <div>
-        {game ? (
-          <Link href={`/game/${review.gameId}`} className="hover:underline">
-            <h3 className="font-semibold">{game.name}</h3>
-          </Link>
-        ) : (
-          <h3 className="font-semibold">Unknown Game</h3>
-        )}
+      <div className="flex flex-col justify-between flex-grow relative w-full pr-6">
+        <div>
+          {game ? (
+            <Link href={`/game/${review.gameId}`} className="hover:underline">
+              <h3 className="font-semibold">{game.name}</h3>
+            </Link>
+          ) : (
+            <h3 className="font-semibold">Unknown Game</h3>
+          )}
+          <p className="text-sm mt-1 [overflow-wrap:anywhere]">{review.text}</p>
 
-        <p className="text-sm mt-1">{review.text}</p>
-        <p className="text-xs text-gray-500 mt-2">Rating: {review.rating}/10</p>
+          <p className="text-xs text-gray-500 mt-2">
+            Rating: {review.rating}/10 • {formattedDate}
+          </p>
+        </div>
+      </div>
+      <div className="absolute bottom-2 right-3 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+        <Heart size={20} />
       </div>
     </div>
   );

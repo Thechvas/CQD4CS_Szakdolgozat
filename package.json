@@ -15,7 +15,6 @@
     "@faker-js/faker": "^9.7.0",
     "@prisma/client": "^6.6.0",
     "@radix-ui/react-slot": "^1.2.0",
-    "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/vite": "^4.1.4",
     "@uploadthing/react": "^7.3.0",
     "axios": "^1.9.0",
@@ -38,6 +37,7 @@
     "world-countries": "^5.1.0"
   },
   "devDependencies": {
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/postcss": "^4",
     "@types/axios": "^0.9.36",
     "@types/bcrypt": "^5.0.2",

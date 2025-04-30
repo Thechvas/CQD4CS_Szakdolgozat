@@ -27,7 +27,11 @@ export default async function UserProfilePage({
   const user = await prisma.user.findUnique({
     where: { username },
     include: {
-      reviews: true,
+      reviews: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
       lists: true,
       followers: true,
       following: true,

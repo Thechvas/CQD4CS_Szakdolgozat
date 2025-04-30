@@ -27,20 +27,6 @@ export default async function GamePage({
   const game = data[0];
   if (!game) return notFound();
 
-  const reviews = await prisma.review.findMany({
-    where: {
-      gameId: Number(gameId),
-    },
-    include: {
-      user: {
-        select: { username: true, profilePic: true },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
   const session = await getServerSession(authOptions);
   let userReview = null;
 
@@ -55,32 +41,38 @@ export default async function GamePage({
     });
   }
 
+  const reviews = await prisma.review.findMany({
+    where: {
+      gameId: Number(gameId),
+    },
+    include: {
+      user: {
+        select: { username: true, profilePic: true },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return (
-    <main className="p-6 max-w-5xl mx-auto">
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
       <GameDetails game={game} />
       <AddToList gameId={game.id} />
 
-      <section className="mt-10">
-        {session && (
-          <section className="mt-10">
-            <ReviewFormForGameWrapper gameId={Number(gameId)} />
-          </section>
-        )}
-      </section>
+      {session && (
+        <div className="mt-10">
+          <ReviewFormForGameWrapper gameId={Number(gameId)} />
+        </div>
+      )}
 
-      <section className="mt-10">
-        <h2 className="text-2xl font-bold mb-4">User Reviews</h2>
-
+      <div className="mt-10">
+        <h2 className="text-xl font-semibold mb-2">User Reviews</h2>
         {reviews.length > 0 ? (
           <ul className="space-y-4">
             {reviews.map((review) => (
               <li key={review.id}>
-                <ReviewCardForGame
-                  review={{
-                    ...review,
-                    createdAt: review.createdAt.toISOString(),
-                  }}
-                />
+                <ReviewCardForGame review={review} />
               </li>
             ))}
           </ul>
@@ -89,7 +81,7 @@ export default async function GamePage({
             No reviews yet. Be the first to review!
           </p>
         )}
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }

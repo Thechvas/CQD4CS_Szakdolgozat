@@ -1,5 +1,6 @@
 "use client";
 
+import { Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,7 +9,7 @@ interface ReviewCardForGameProps {
     id: string;
     text: string;
     rating: number;
-    createdAt?: string;
+    createdAt?: Date;
     user: {
       username: string;
       profilePic?: string | null;
@@ -18,7 +19,7 @@ interface ReviewCardForGameProps {
 
 export default function ReviewCardForGame({ review }: ReviewCardForGameProps) {
   return (
-    <div className="border p-4 rounded bg-gray-50 flex gap-4 items-start">
+    <div className="border p-4 rounded bg-gray-50 flex gap-4 items-start relative">
       <Link href={`/user/${review.user.username}`} className="shrink-0">
         <Image
           src={review.user.profilePic || "/default_profile.jpg"}
@@ -29,7 +30,7 @@ export default function ReviewCardForGame({ review }: ReviewCardForGameProps) {
         />
       </Link>
 
-      <div>
+      <div className="flex flex-col flex-grow pr-6">
         <Link
           href={`/user/${review.user.username}`}
           className="hover:underline"
@@ -37,13 +38,16 @@ export default function ReviewCardForGame({ review }: ReviewCardForGameProps) {
           <h4 className="font-semibold">{review.user.username}</h4>
         </Link>
 
-        <p className="text-sm mt-1">{review.text}</p>
+        <p className="text-sm mt-1 [overflow-wrap:anywhere]">{review.text}</p>
 
         <p className="text-xs text-gray-500 mt-2">
           Rating: {review.rating}/10
           {review.createdAt &&
             ` • ${new Date(review.createdAt).toLocaleDateString()}`}
         </p>
+        <div className="absolute bottom-2 right-3 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+          <Heart size={20} />
+        </div>
       </div>
     </div>
   );
