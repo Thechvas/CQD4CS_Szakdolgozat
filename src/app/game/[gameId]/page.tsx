@@ -7,6 +7,7 @@ import GameDetails from "@/components/GameDetails";
 import ReviewCardForGame from "@/components/ReviewCardForGame";
 import { IGDBGame } from "@/types";
 import ReviewFormForGameWrapper from "@/components/ReviewFormForGameWrapper";
+import AddToList from "@/components/AddToList";
 
 export default async function GamePage({
   params,
@@ -57,6 +58,7 @@ export default async function GamePage({
   return (
     <main className="p-6 max-w-5xl mx-auto">
       <GameDetails game={game} />
+      <AddToList gameId={game.id} />
 
       <section className="mt-10">
         {session && (

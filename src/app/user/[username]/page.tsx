@@ -7,6 +7,9 @@ import ReviewCard from "@/components/ReviewCard";
 import ListCard from "@/components/ListCard";
 import UserCountry from "@/components/UserCountry";
 import ImageWrapper from "@/components/ImageWrapper";
+import NewListForm from "@/components/NewListForm";
+import { revalidatePath } from "next/cache";
+import { Pen } from "lucide-react";
 
 interface UserProfilePageParams {
   params: {
@@ -77,15 +80,25 @@ export default async function UserProfilePage({
         {session?.user?.id === user.id && (
           <a
             href={`/user/${user.username}/edit`}
-            className="text-blue-500 hover:underline text-sm font-medium"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium transition"
           >
-            ✏️ Edit Profile
+            <Pen className="w-4 h-4" />
+            Edit
           </a>
         )}
       </div>
 
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Lists</h2>
+        {session?.user?.id === user.id && (
+          <NewListForm
+            userId={user.id}
+            onListCreated={async () => {
+              "use server";
+              revalidatePath(`/user/${username}`);
+            }}
+          />
+        )}
         {user.lists.length > 0 ? (
           <ul className="space-y-4">
             {user.lists.map((list) => (

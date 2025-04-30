@@ -15,7 +15,7 @@ const Navbar = () => {
   const discover = [
     { name: "Popular", href: "/popular" },
     { name: "Top Rated", href: "/top-rated" },
-    { name: "Most Played", href: "/games/most-played" },
+    { name: "Most Played", href: "/most-played" },
     { name: "Recently Released", href: "/recently-released" },
   ];
 

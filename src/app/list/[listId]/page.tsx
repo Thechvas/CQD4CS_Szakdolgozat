@@ -1,8 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { fetchFromIGDB } from "@/lib/igdb";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
+import { ListActions } from "@/components/ListActions";
 
 interface GameInfo {
   id: number;
@@ -16,12 +19,14 @@ export default async function ListPage({
   params: { listId: string };
 }) {
   const { listId } = await params;
+  const session = await getServerSession(authOptions);
 
   const list = await prisma.list.findUnique({
     where: { id: listId },
     include: {
       user: {
         select: {
+          id: true,
           username: true,
           profilePic: true,
         },
@@ -31,11 +36,47 @@ export default async function ListPage({
 
   if (!list) return notFound();
 
+  const isOwner = session?.user?.username === list.user.username;
+
+  const Header = (
+    <div className="flex justify-between items-start">
+      <div>
+        <h1 className="text-4xl font-bold mb-2">{list.name}</h1>
+        <p className="text-gray-700 text-lg">{list.description}</p>
+      </div>
+
+      <div className="flex flex-col items-end text-sm text-gray-600">
+        {isOwner && (
+          <div className="flex gap-2 mb-3">
+            <ListActions listId={list.id} />
+          </div>
+        )}
+
+        <Link
+          href={`/user/${list.user.username}`}
+          className="flex items-center gap-2 hover:underline"
+        >
+          <Image
+            src={list.user.profilePic || "/default_profile.jpg"}
+            alt={`${list.user.username}'s profile picture`}
+            width={40}
+            height={40}
+            className="rounded-full object-cover"
+          />
+          <span className="font-semibold">{list.user.username}</span>
+        </Link>
+        <p className="mt-1 text-xs">
+          Created at: {new Date(list.createdAt).toLocaleDateString()}
+        </p>
+      </div>
+    </div>
+  );
+
   if (list.gameIds.length === 0) {
     return (
       <main className="p-6 max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-6">{list.name}</h1>
-        <p className="text-gray-500">This list is empty.</p>
+        {Header}
+        <p className="text-gray-500 mt-6">This list is empty.</p>
       </main>
     );
   }
@@ -58,31 +99,7 @@ export default async function ListPage({
 
   return (
     <main className="p-6 max-w-6xl mx-auto space-y-8">
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">{list.name}</h1>
-          <p className="text-gray-700 text-lg">{list.description}</p>
-        </div>
-
-        <div className="flex flex-col items-end text-sm text-gray-600">
-          <Link
-            href={`/user/${list.user.username}`}
-            className="flex items-center gap-2 hover:underline"
-          >
-            <Image
-              src={list.user.profilePic || "/default_profile.jpg"}
-              alt={`${list.user.username}'s profile picture`}
-              width={40}
-              height={40}
-              className="rounded-full object-cover"
-            />
-            <span className="font-semibold">{list.user.username}</span>
-          </Link>
-          <p className="mt-1 text-xs">
-            Created at: {new Date(list.createdAt).toLocaleDateString()}
-          </p>
-        </div>
-      </div>
+      {Header}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {games.map((game) => (
