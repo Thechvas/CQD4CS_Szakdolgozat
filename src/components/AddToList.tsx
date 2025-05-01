@@ -18,47 +18,51 @@ export default function AddToList({ gameId }: AddToListProps) {
   const { data: session, status } = useSession();
   const [lists, setLists] = useState<List[]>([]);
   const [selectedList, setSelectedList] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (status !== "authenticated") return;
 
     axios
       .get<List[]>("/api/list")
-      .then((res) => {
-        setLists(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Failed to load your lists.");
-      });
+      .then((res) => setLists(res.data))
+      .catch(() => toast.error("Failed to load your lists."));
   }, [status]);
 
   const handleAdd = async () => {
     if (!selectedList) return;
 
+    setIsLoading(true);
     try {
       await axios.post("/api/list/add-game", {
         listId: selectedList,
         gameId,
       });
       toast.success("Game added to list!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to add game to list.");
+      setSelectedList("");
+    } catch (error: any) {
+      const status = error?.response?.status;
+      if (status === 409) {
+        toast.error("This game is already in the selected list.");
+      } else {
+        toast.error("Failed to add game to list.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (status === "loading") return null;
-  if (!session) return null;
+  if (status === "loading" || !session) return null;
 
   return (
     <div className="my-6">
-      <h2 className="text-xl font-semibold mb-2">Add to List</h2>
-      <div className="flex items-center gap-4">
+      <h2 className="text-xl font-semibold mb-3">Add to List</h2>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <select
-          className="border px-3 py-2 rounded-md"
+          className="border border-gray-300 px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           value={selectedList}
           onChange={(e) => setSelectedList(e.target.value)}
+          disabled={isLoading}
         >
           <option value="">Select a list</option>
           {lists.map((list) => (
@@ -69,9 +73,10 @@ export default function AddToList({ gameId }: AddToListProps) {
         </select>
         <button
           onClick={handleAdd}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+          disabled={!selectedList || isLoading}
         >
-          Add
+          {isLoading ? "Adding..." : "Add"}
         </button>
       </div>
     </div>

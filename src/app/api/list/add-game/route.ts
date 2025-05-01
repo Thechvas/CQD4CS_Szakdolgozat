@@ -16,6 +16,22 @@ export async function POST(req: Request) {
   }
 
   try {
+    const list = await prisma.list.findUnique({
+      where: { id: listId },
+      select: { gameIds: true },
+    });
+
+    if (!list) {
+      return NextResponse.json({ error: "List not found" }, { status: 404 });
+    }
+
+    if (list.gameIds.includes(gameId)) {
+      return NextResponse.json(
+        { error: "Game already in list" },
+        { status: 409 }
+      );
+    }
+
     await prisma.list.update({
       where: { id: listId },
       data: {
