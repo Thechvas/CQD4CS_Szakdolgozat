@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 interface AddToListProps {
   gameId: number;
@@ -14,14 +15,23 @@ interface List {
 }
 
 export default function AddToList({ gameId }: AddToListProps) {
+  const { data: session, status } = useSession();
   const [lists, setLists] = useState<List[]>([]);
   const [selectedList, setSelectedList] = useState<string>("");
 
   useEffect(() => {
-    axios.get<List[]>("/api/list").then((res) => {
-      setLists(res.data);
-    });
-  }, []);
+    if (status !== "authenticated") return;
+
+    axios
+      .get<List[]>("/api/list")
+      .then((res) => {
+        setLists(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to load your lists.");
+      });
+  }, [status]);
 
   const handleAdd = async () => {
     if (!selectedList) return;
@@ -37,6 +47,9 @@ export default function AddToList({ gameId }: AddToListProps) {
       toast.error("Failed to add game to list.");
     }
   };
+
+  if (status === "loading") return null;
+  if (!session) return null;
 
   return (
     <div className="my-6">

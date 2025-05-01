@@ -75,8 +75,26 @@ export default async function UserProfilePage({
             )}
 
             <p className="text-sm text-gray-500 mt-1">
-              Followers: {user.followers.length} • Following:{" "}
-              {user.following.length}
+              Member since:{" "}
+              {new Date(user.createdAt).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+              })}
+            </p>
+
+            <p className="text-sm text-gray-500 mt-1">
+              Followers: {user.followers.length} •{" "}
+              {session?.user?.id === user.id ? (
+                <a
+                  href={`/user/${user.username}/following`}
+                  className="text-blue-600 hover:underline"
+                >
+                  Following: {user.following.length}
+                </a>
+              ) : (
+                <>Following: {user.following.length}</>
+              )}
             </p>
           </div>
         </div>
