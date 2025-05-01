@@ -3,13 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import FollowButton from "@/components/FollowButton";
-import ReviewCard from "@/components/ReviewCard";
-import ListCard from "@/components/ListCard";
 import UserCountry from "@/components/UserCountry";
 import ImageWrapper from "@/components/ImageWrapper";
-import NewListForm from "@/components/NewListForm";
-import { revalidatePath } from "next/cache";
 import { Pen } from "lucide-react";
+import UserReviews from "@/components/UserReviews";
+import UserLists from "@/components/UserLists";
 
 interface UserProfilePageParams {
   params: {
@@ -110,50 +108,13 @@ export default async function UserProfilePage({
         )}
       </div>
 
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">Lists</h2>
-        {session?.user?.id === user.id && (
-          <NewListForm
-            userId={user.id}
-            onListCreated={async () => {
-              "use server";
-              revalidatePath(`/user/${username}`);
-            }}
-          />
-        )}
-        {user.lists.length > 0 ? (
-          <ul className="space-y-4">
-            {user.lists.map((list) => (
-              <li key={list.id}>
-                <ListCard
-                  list={{
-                    ...list,
-                    createdAt: list.createdAt.toISOString(),
-                    description: list.description || "No description available",
-                  }}
-                />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No lists yet.</p>
-        )}
-      </div>
+      <UserLists
+        username={username}
+        isOwner={session?.user?.id === user.id}
+        userId={user.id}
+      />
 
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Reviews</h2>
-        {user.reviews.length > 0 ? (
-          <ul className="space-y-2">
-            {user.reviews.map((review) => (
-              <li key={review.id}>
-                <ReviewCard review={review} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No reviews yet.</p>
-        )}
-      </div>
+      <UserReviews username={username} />
     </div>
   );
 }

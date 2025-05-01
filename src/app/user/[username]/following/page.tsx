@@ -61,7 +61,7 @@ export default async function FollowingPage({ params }: FollowingPageProps) {
                   className="w-12 h-12 relative"
                 >
                   <Image
-                    src={followedUser.profilePic || "/default-avatar.png"}
+                    src={followedUser.profilePic || "/default_profile.jpg"}
                     alt={followedUser.username}
                     fill
                     className="rounded-full object-cover"

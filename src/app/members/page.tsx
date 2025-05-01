@@ -48,7 +48,7 @@ export default async function TopMembersPage() {
                 className="w-16 h-16 relative"
               >
                 <Image
-                  src={user.profilePic || "/default-avatar.png"}
+                  src={user.profilePic || "/default_profile.jpg"}
                   alt={user.username}
                   fill
                   className="rounded-full object-cover"
