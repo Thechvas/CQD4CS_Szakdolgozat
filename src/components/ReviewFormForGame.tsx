@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface ReviewFormForGameProps {
   gameId: number;
@@ -35,22 +36,35 @@ export default function ReviewFormForGame({
     if (text.length > MAX_CHARACTERS) return;
 
     setLoading(true);
+    const toastId = toast.loading(
+      existingReview ? "Updating review..." : "Posting review..."
+    );
 
-    await fetch("/api/reviews", {
-      method: "POST",
-      body: JSON.stringify({
-        gameId,
-        text,
-        rating,
-        reviewId: existingReview?.id,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        body: JSON.stringify({
+          gameId,
+          text,
+          rating,
+          reviewId: existingReview?.id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    setLoading(false);
-    router.refresh();
+      if (!res.ok) throw new Error();
+
+      toast.success(existingReview ? "Review updated!" : "Review posted!", {
+        id: toastId,
+      });
+      router.refresh();
+    } catch (err) {
+      toast.error("Something went wrong. Try again.", { id: toastId });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -58,16 +72,25 @@ export default function ReviewFormForGame({
     if (!confirm("Are you sure you want to delete your review?")) return;
 
     setLoading(true);
+    const toastId = toast.loading("Deleting review...");
 
-    await fetch(`/api/reviews/${existingReview.id}`, {
-      method: "DELETE",
-    });
+    try {
+      const res = await fetch(`/api/reviews/${existingReview.id}`, {
+        method: "DELETE",
+      });
 
-    setText("");
-    setRating(5);
+      if (!res.ok) throw new Error();
 
-    setLoading(false);
-    router.refresh();
+      toast.success("Review deleted!", { id: toastId });
+
+      setText("");
+      setRating(5);
+      router.refresh();
+    } catch (err) {
+      toast.error("Failed to delete review.", { id: toastId });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
