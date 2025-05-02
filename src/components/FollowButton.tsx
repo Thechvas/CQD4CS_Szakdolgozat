@@ -9,11 +9,13 @@ import { toggleFollow } from "@/actions/user.action";
 interface FollowButtonProps {
   userId: string;
   isFollowingInitial?: boolean;
+  onFollowToggle?: () => void;
 }
 
 export default function FollowButton({
   userId,
   isFollowingInitial = false,
+  onFollowToggle,
 }: FollowButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isFollowing, setIsFollowing] = useState(isFollowingInitial);
@@ -29,6 +31,7 @@ export default function FollowButton({
         toast.success(
           isFollowing ? "Unfollowed successfully" : "Followed successfully"
         );
+        onFollowToggle?.();
       } else {
         toast.error(res?.error || "Something went wrong");
       }

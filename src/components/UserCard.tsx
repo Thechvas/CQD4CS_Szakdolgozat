@@ -17,12 +17,14 @@ type UserCardProps = {
   };
   rank?: number;
   showFollowButton?: boolean;
+  refetchMembers?: () => void;
 };
 
 export default function UserCard({
   user,
   rank,
   showFollowButton = true,
+  refetchMembers,
 }: UserCardProps) {
   const { data: session } = useSession();
   const isFollowing = user.followers.some(
@@ -60,7 +62,11 @@ export default function UserCard({
       </div>
 
       {showFollowButton && session?.user?.id && session.user.id !== user.id && (
-        <FollowButton userId={user.id} isFollowingInitial={isFollowing} />
+        <FollowButton
+          userId={user.id}
+          isFollowingInitial={isFollowing}
+          onFollowToggle={refetchMembers}
+        />
       )}
     </div>
   );
