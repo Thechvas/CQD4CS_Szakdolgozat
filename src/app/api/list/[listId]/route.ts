@@ -7,6 +7,7 @@ export async function PUT(
   req: Request,
   { params }: { params: { listId: string } }
 ) {
+  const { listId } = await params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -15,7 +16,7 @@ export async function PUT(
   const { name, description } = await req.json();
 
   const list = await prisma.list.findUnique({
-    where: { id: params.listId },
+    where: { id: listId },
   });
 
   if (!list || list.userId !== session.user.id) {
@@ -23,7 +24,7 @@ export async function PUT(
   }
 
   const updated = await prisma.list.update({
-    where: { id: params.listId },
+    where: { id: listId },
     data: { name, description },
   });
 

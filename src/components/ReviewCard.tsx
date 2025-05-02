@@ -18,6 +18,7 @@ interface ReviewCardProps {
     rating: number;
     gameId: number;
     createdAt: Date;
+    updatedAt: Date;
   };
 }
 
@@ -50,9 +51,9 @@ export default function ReviewCard({ review }: ReviewCardProps) {
     fetchGame();
   }, [review.gameId]);
 
-  const formattedDate = new Date(review.createdAt).toLocaleDateString(
+  const formattedDate = new Date(review.updatedAt).toLocaleDateString(
     undefined,
-    { year: "numeric", month: "short", day: "numeric" }
+    { year: "numeric", month: "numeric", day: "numeric" }
   );
 
   return (

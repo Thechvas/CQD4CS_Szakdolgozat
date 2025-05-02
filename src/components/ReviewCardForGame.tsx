@@ -16,6 +16,7 @@ interface ReviewCardForGameProps {
     text: string;
     rating: number;
     createdAt?: Date;
+    updatedAt?: Date;
     user: {
       username: string;
       profilePic?: string | null;
@@ -24,8 +25,12 @@ interface ReviewCardForGameProps {
 }
 
 export default function ReviewCardForGame({ review }: ReviewCardForGameProps) {
-  const formattedDate = review.createdAt
-    ? new Date(review.createdAt).toLocaleDateString()
+  const formattedDate = review.updatedAt
+    ? new Date(review.updatedAt).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+      })
     : null;
 
   return (

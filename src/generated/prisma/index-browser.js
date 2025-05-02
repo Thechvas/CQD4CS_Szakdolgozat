@@ -133,6 +133,7 @@ exports.Prisma.ReviewScalarFieldEnum = {
   text: 'text',
   rating: 'rating',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   userId: 'userId',
   gameId: 'gameId'
 };

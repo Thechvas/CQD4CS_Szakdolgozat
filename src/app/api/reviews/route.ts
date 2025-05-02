@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -18,28 +19,45 @@ export async function POST(req: Request) {
     return new Response("Invalid rating", { status: 400 });
   }
 
-  if (reviewId) {
-    await prisma.review.update({
-      where: { id: reviewId },
-      data: {
-        text,
-        rating,
-      },
-    });
-  } else {
-    await prisma.review.create({
-      data: {
-        text,
-        rating,
-        gameId,
-        user: {
-          connect: {
-            email: session.user.email!,
+  try {
+    if (reviewId) {
+      await prisma.review.update({
+        where: { id: reviewId },
+        data: { text, rating },
+      });
+    } else {
+      const existing = await prisma.review.findUnique({
+        where: {
+          userId_gameId: {
+            userId: session.user.id,
+            gameId,
           },
         },
-      },
-    });
-  }
+      });
 
-  return new Response("OK");
+      if (existing) {
+        return new Response("You already reviewed this game", { status: 409 });
+      }
+
+      await prisma.review.create({
+        data: {
+          text,
+          rating,
+          gameId,
+          user: {
+            connect: { email: session.user.email! },
+          },
+        },
+      });
+    }
+
+    return new Response("OK");
+  } catch (err) {
+    if (err instanceof PrismaClientKnownRequestError && err.code === "P2002") {
+      return new Response("Duplicate review not allowed", { status: 409 });
+    }
+
+    console.error("Unexpected error:", err);
+    return new Response("Server error", { status: 500 });
+  }
 }

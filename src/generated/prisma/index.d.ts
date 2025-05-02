@@ -2419,6 +2419,7 @@ export namespace Prisma {
     text: string | null
     rating: number | null
     createdAt: Date | null
+    updatedAt: Date | null
     userId: string | null
     gameId: number | null
   }
@@ -2428,6 +2429,7 @@ export namespace Prisma {
     text: string | null
     rating: number | null
     createdAt: Date | null
+    updatedAt: Date | null
     userId: string | null
     gameId: number | null
   }
@@ -2437,6 +2439,7 @@ export namespace Prisma {
     text: number
     rating: number
     createdAt: number
+    updatedAt: number
     userId: number
     gameId: number
     _all: number
@@ -2458,6 +2461,7 @@ export namespace Prisma {
     text?: true
     rating?: true
     createdAt?: true
+    updatedAt?: true
     userId?: true
     gameId?: true
   }
@@ -2467,6 +2471,7 @@ export namespace Prisma {
     text?: true
     rating?: true
     createdAt?: true
+    updatedAt?: true
     userId?: true
     gameId?: true
   }
@@ -2476,6 +2481,7 @@ export namespace Prisma {
     text?: true
     rating?: true
     createdAt?: true
+    updatedAt?: true
     userId?: true
     gameId?: true
     _all?: true
@@ -2572,6 +2578,7 @@ export namespace Prisma {
     text: string
     rating: number
     createdAt: Date
+    updatedAt: Date
     userId: string
     gameId: number
     _count: ReviewCountAggregateOutputType | null
@@ -2600,6 +2607,7 @@ export namespace Prisma {
     text?: boolean
     rating?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     userId?: boolean
     gameId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2610,6 +2618,7 @@ export namespace Prisma {
     text?: boolean
     rating?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     userId?: boolean
     gameId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2620,6 +2629,7 @@ export namespace Prisma {
     text?: boolean
     rating?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     userId?: boolean
     gameId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2630,11 +2640,12 @@ export namespace Prisma {
     text?: boolean
     rating?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     userId?: boolean
     gameId?: boolean
   }
 
-  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "rating" | "createdAt" | "userId" | "gameId", ExtArgs["result"]["review"]>
+  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "rating" | "createdAt" | "updatedAt" | "userId" | "gameId", ExtArgs["result"]["review"]>
   export type ReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -2655,6 +2666,7 @@ export namespace Prisma {
       text: string
       rating: number
       createdAt: Date
+      updatedAt: Date
       userId: string
       gameId: number
     }, ExtArgs["result"]["review"]>
@@ -3085,6 +3097,7 @@ export namespace Prisma {
     readonly text: FieldRef<"Review", 'String'>
     readonly rating: FieldRef<"Review", 'Int'>
     readonly createdAt: FieldRef<"Review", 'DateTime'>
+    readonly updatedAt: FieldRef<"Review", 'DateTime'>
     readonly userId: FieldRef<"Review", 'String'>
     readonly gameId: FieldRef<"Review", 'Int'>
   }
@@ -5675,6 +5688,7 @@ export namespace Prisma {
     text: 'text',
     rating: 'rating',
     createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
     userId: 'userId',
     gameId: 'gameId'
   };
@@ -5878,6 +5892,7 @@ export namespace Prisma {
     text?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
     createdAt?: DateTimeFilter<"Review"> | Date | string
+    updatedAt?: DateTimeFilter<"Review"> | Date | string
     userId?: StringFilter<"Review"> | string
     gameId?: IntFilter<"Review"> | number
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -5888,6 +5903,7 @@ export namespace Prisma {
     text?: SortOrder
     rating?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     userId?: SortOrder
     gameId?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -5895,22 +5911,25 @@ export namespace Prisma {
 
   export type ReviewWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId_gameId?: ReviewUserIdGameIdCompoundUniqueInput
     AND?: ReviewWhereInput | ReviewWhereInput[]
     OR?: ReviewWhereInput[]
     NOT?: ReviewWhereInput | ReviewWhereInput[]
     text?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
     createdAt?: DateTimeFilter<"Review"> | Date | string
+    updatedAt?: DateTimeFilter<"Review"> | Date | string
     userId?: StringFilter<"Review"> | string
     gameId?: IntFilter<"Review"> | number
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+  }, "id" | "userId_gameId">
 
   export type ReviewOrderByWithAggregationInput = {
     id?: SortOrder
     text?: SortOrder
     rating?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     userId?: SortOrder
     gameId?: SortOrder
     _count?: ReviewCountOrderByAggregateInput
@@ -5928,6 +5947,7 @@ export namespace Prisma {
     text?: StringWithAggregatesFilter<"Review"> | string
     rating?: IntWithAggregatesFilter<"Review"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
     userId?: StringWithAggregatesFilter<"Review"> | string
     gameId?: IntWithAggregatesFilter<"Review"> | number
   }
@@ -6141,6 +6161,7 @@ export namespace Prisma {
     text: string
     rating: number
     createdAt?: Date | string
+    updatedAt?: Date | string
     gameId: number
     user: UserCreateNestedOneWithoutReviewsInput
   }
@@ -6150,6 +6171,7 @@ export namespace Prisma {
     text: string
     rating: number
     createdAt?: Date | string
+    updatedAt?: Date | string
     userId: string
     gameId: number
   }
@@ -6159,6 +6181,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     gameId?: IntFieldUpdateOperationsInput | number
     user?: UserUpdateOneRequiredWithoutReviewsNestedInput
   }
@@ -6168,6 +6191,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     gameId?: IntFieldUpdateOperationsInput | number
   }
@@ -6177,6 +6201,7 @@ export namespace Prisma {
     text: string
     rating: number
     createdAt?: Date | string
+    updatedAt?: Date | string
     userId: string
     gameId: number
   }
@@ -6186,6 +6211,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     gameId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -6194,6 +6220,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     gameId?: IntFieldUpdateOperationsInput | number
   }
@@ -6475,11 +6502,17 @@ export namespace Prisma {
     isNot?: UserWhereInput
   }
 
+  export type ReviewUserIdGameIdCompoundUniqueInput = {
+    userId: string
+    gameId: number
+  }
+
   export type ReviewCountOrderByAggregateInput = {
     id?: SortOrder
     text?: SortOrder
     rating?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     userId?: SortOrder
     gameId?: SortOrder
   }
@@ -6494,6 +6527,7 @@ export namespace Prisma {
     text?: SortOrder
     rating?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     userId?: SortOrder
     gameId?: SortOrder
   }
@@ -6503,6 +6537,7 @@ export namespace Prisma {
     text?: SortOrder
     rating?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     userId?: SortOrder
     gameId?: SortOrder
   }
@@ -6986,6 +7021,7 @@ export namespace Prisma {
     text: string
     rating: number
     createdAt?: Date | string
+    updatedAt?: Date | string
     gameId: number
   }
 
@@ -6994,6 +7030,7 @@ export namespace Prisma {
     text: string
     rating: number
     createdAt?: Date | string
+    updatedAt?: Date | string
     gameId: number
   }
 
@@ -7097,6 +7134,7 @@ export namespace Prisma {
     text?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
     createdAt?: DateTimeFilter<"Review"> | Date | string
+    updatedAt?: DateTimeFilter<"Review"> | Date | string
     userId?: StringFilter<"Review"> | string
     gameId?: IntFilter<"Review"> | number
   }
@@ -7463,6 +7501,7 @@ export namespace Prisma {
     text: string
     rating: number
     createdAt?: Date | string
+    updatedAt?: Date | string
     gameId: number
   }
 
@@ -7489,6 +7528,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     gameId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -7497,6 +7537,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     gameId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -7505,6 +7546,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     gameId?: IntFieldUpdateOperationsInput | number
   }
 
