@@ -56,17 +56,19 @@ export default async function GamePage({
   });
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-      <GameDetails game={game} />
-      <AddToList gameId={game.id} />
+    <div className="max-w-6xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg space-y-10">
+      <div className="space-y-6">
+        <GameDetails game={game} />
+        <AddToList gameId={game.id} />
+      </div>
 
       {session && (
-        <div className="mt-10">
+        <div>
           <ReviewFormForGameWrapper gameId={Number(gameId)} />
         </div>
       )}
 
-      <div className="mt-10">
+      <div>
         <h2 className="text-xl font-semibold mb-2">User Reviews</h2>
         {reviews.length > 0 ? (
           <ul className="space-y-4">

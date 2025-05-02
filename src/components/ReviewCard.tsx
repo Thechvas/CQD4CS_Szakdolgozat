@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import ImageWrapper from "./ImageWrapper";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface ReviewCardProps {
   review: {
@@ -46,15 +52,11 @@ export default function ReviewCard({ review }: ReviewCardProps) {
 
   const formattedDate = new Date(review.createdAt).toLocaleDateString(
     undefined,
-    {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }
+    { year: "numeric", month: "short", day: "numeric" }
   );
 
   return (
-    <div className="border p-3 rounded bg-gray-50 flex gap-4 items-start relative">
+    <div className="border p-4 rounded bg-gray-50 flex flex-col sm:flex-row gap-4 relative hover:shadow-lg transition-shadow">
       {game?.coverUrl ? (
         <Link href={`/game/${review.gameId}`} className="shrink-0">
           <ImageWrapper
@@ -68,7 +70,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         <div className="w-[64px] h-[90px] bg-gray-300 rounded-md" />
       )}
 
-      <div className="flex flex-col justify-between flex-grow relative w-full pr-6">
+      <div className="flex flex-col justify-between flex-grow pr-6 w-full">
         <div>
           {game ? (
             <Link href={`/game/${review.gameId}`} className="hover:underline">
@@ -77,16 +79,35 @@ export default function ReviewCard({ review }: ReviewCardProps) {
           ) : (
             <h3 className="font-semibold">Unknown Game</h3>
           )}
-          <p className="text-sm mt-1 [overflow-wrap:anywhere]">{review.text}</p>
 
-          <p className="text-xs text-gray-500 mt-2">
-            Rating: {review.rating}/10 • {formattedDate}
+          <p className="text-base mt-1 text-gray-800 break-words">
+            {review.text}
           </p>
+
+          <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mt-2">
+            <div className="flex items-center gap-1 text-yellow-500">
+              {Array.from({ length: review.rating }, (_, i) => (
+                <Star key={i} size={16} fill="#FACC15" stroke="none" />
+              ))}
+            </div>
+            <span className="text-gray-600">({review.rating}/10)</span>
+            <span className="text-gray-400">• {formattedDate}</span>
+          </div>
         </div>
       </div>
-      <div className="absolute bottom-2 right-3 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
-        <Heart size={20} />
-      </div>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="absolute bottom-2 right-3 text-gray-400 hover:text-red-500 transition-colors cursor-not-allowed">
+              <Heart size={20} />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={4}>
+            <p>Like feature coming soon</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }

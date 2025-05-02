@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Star } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 interface ReviewFormForGameProps {
   gameId: number;
@@ -25,15 +28,25 @@ export default function ReviewFormForGame({
   const [text, setText] = useState(existingReview?.text || "");
   const [rating, setRating] = useState(existingReview?.rating || 5);
   const [loading, setLoading] = useState(false);
+  const submittedRef = useRef(false);
 
-  if (!isSignedIn) {
-    return null;
-  }
+  if (!isSignedIn) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (text.trim() === "" || rating < 1 || rating > 10) return;
-    if (text.length > MAX_CHARACTERS) return;
+
+    if (submittedRef.current) return;
+    submittedRef.current = true;
+
+    if (
+      text.trim() === "" ||
+      rating < 1 ||
+      rating > 10 ||
+      text.length > MAX_CHARACTERS
+    ) {
+      submittedRef.current = false;
+      return;
+    }
 
     setLoading(true);
     const toastId = toast.loading(
@@ -59,17 +72,23 @@ export default function ReviewFormForGame({
       toast.success(existingReview ? "Review updated!" : "Review posted!", {
         id: toastId,
       });
-      router.refresh();
-    } catch (err) {
-      toast.error("Something went wrong. Try again.", { id: toastId });
-    } finally {
+
       setLoading(false);
+      submittedRef.current = false;
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong. Try again.", { id: toastId });
+      setLoading(false);
+      submittedRef.current = false;
     }
   };
 
   const handleDelete = async () => {
-    if (!existingReview) return;
-    if (!confirm("Are you sure you want to delete your review?")) return;
+    if (
+      !existingReview ||
+      !confirm("Are you sure you want to delete your review?")
+    )
+      return;
 
     setLoading(true);
     const toastId = toast.loading("Deleting review...");
@@ -82,11 +101,10 @@ export default function ReviewFormForGame({
       if (!res.ok) throw new Error();
 
       toast.success("Review deleted!", { id: toastId });
-
       setText("");
       setRating(5);
       router.refresh();
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete review.", { id: toastId });
     } finally {
       setLoading(false);
@@ -96,59 +114,89 @@ export default function ReviewFormForGame({
   return (
     <form
       onSubmit={handleSubmit}
-      className="border p-4 rounded bg-white shadow-sm space-y-4"
+      className="border p-6 rounded bg-white shadow-sm space-y-5"
     >
       <h3 className="text-lg font-semibold">
         {existingReview ? "Edit Your Review" : "Write a Review"}
       </h3>
 
-      <textarea
-        className="w-full border rounded p-2"
-        placeholder={`Share your thoughts (max ${MAX_CHARACTERS} characters)...`}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        rows={6}
-        maxLength={MAX_CHARACTERS}
-        required
-      />
-
-      <div className="text-sm text-gray-500 text-right">
-        {text.length}/{MAX_CHARACTERS}
+      <div>
+        <Textarea
+          id="review"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          maxLength={MAX_CHARACTERS}
+          rows={6}
+          placeholder="Share your thoughts..."
+          className="text-lg leading-relaxed placeholder:text-gray-400"
+          required
+        />
+        <div className="text-sm text-right text-gray-400 mt-1">
+          {text.length}/{MAX_CHARACTERS} characters
+        </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <label className="text-sm">Rating:</label>
-        <select
-          className="border rounded p-1"
-          value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}
-        >
-          {[...Array(10)].map((_, i) => (
-            <option key={i + 1} value={i + 1}>
-              {i + 1}
-            </option>
-          ))}
-        </select>
+      <div className="flex flex-col gap-2">
+        <span className="text-sm text-gray-600">Your Rating:</span>
+        <div className="flex flex-wrap gap-1 sm:gap-2">
+          {[...Array(10)].map((_, i) => {
+            const value = i + 1;
+            return (
+              <button
+                type="button"
+                key={value}
+                onClick={() => setRating(value)}
+                className={`transition ${
+                  value <= rating ? "text-yellow-500" : "text-gray-300"
+                }`}
+              >
+                <Star size={20} fill={value <= rating ? "#FACC15" : "none"} />
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {existingReview ? "Update Review" : "Post Review"}
-        </button>
+      <div className="flex flex-wrap gap-2">
+        <Button type="submit" disabled={loading || submittedRef.current}>
+          {loading ? (
+            <div className="flex items-center gap-2">
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                ></path>
+              </svg>
+              {existingReview ? "Updating..." : "Posting..."}
+            </div>
+          ) : (
+            <>{existingReview ? "Update Review" : "Post Review"}</>
+          )}
+        </Button>
 
         {existingReview && (
-          <button
+          <Button
             type="button"
+            variant="destructive"
             disabled={loading}
             onClick={handleDelete}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           >
             Delete Review
-          </button>
+          </Button>
         )}
       </div>
     </form>

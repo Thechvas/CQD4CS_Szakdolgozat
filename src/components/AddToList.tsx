@@ -1,9 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { toast } from "react-hot-toast";
+import { List as ListIcon } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AddToListProps {
   gameId: number;
@@ -52,33 +62,40 @@ export default function AddToList({ gameId }: AddToListProps) {
     }
   };
 
-  if (status === "loading" || !session) return null;
+  if (status !== "authenticated") return null;
 
   return (
-    <div className="my-6">
-      <h2 className="text-xl font-semibold mb-3">Add to List</h2>
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <select
-          className="border border-gray-300 px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+    <Card>
+      <CardHeader className="flex items-center gap-2">
+        <ListIcon className="text-blue-600" />
+        <CardTitle>Add to List</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Select
           value={selectedList}
-          onChange={(e) => setSelectedList(e.target.value)}
+          onValueChange={setSelectedList}
           disabled={isLoading}
         >
-          <option value="">Select a list</option>
-          {lists.map((list) => (
-            <option key={list.id} value={list.id}>
-              {list.name}
-            </option>
-          ))}
-        </select>
-        <button
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a list" />
+          </SelectTrigger>
+          <SelectContent>
+            {lists.map((list) => (
+              <SelectItem key={list.id} value={list.id}>
+                {list.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Button
           onClick={handleAdd}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
           disabled={!selectedList || isLoading}
+          className="w-full"
         >
-          {isLoading ? "Adding..." : "Add"}
-        </button>
-      </div>
-    </div>
+          {isLoading ? "Adding..." : "Add to List"}
+        </Button>
+      </CardContent>
+    </Card>
   );
 }

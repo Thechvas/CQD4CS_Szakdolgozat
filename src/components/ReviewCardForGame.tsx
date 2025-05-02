@@ -1,8 +1,14 @@
 "use client";
 
-import { Heart } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ReviewCardForGameProps {
   review: {
@@ -18,8 +24,12 @@ interface ReviewCardForGameProps {
 }
 
 export default function ReviewCardForGame({ review }: ReviewCardForGameProps) {
+  const formattedDate = review.createdAt
+    ? new Date(review.createdAt).toLocaleDateString()
+    : null;
+
   return (
-    <div className="border p-4 rounded bg-gray-50 flex gap-4 items-start relative">
+    <div className="border p-4 rounded bg-gray-50 flex flex-col sm:flex-row gap-4 sm:items-start relative hover:shadow-lg transition-shadow">
       <Link href={`/user/${review.user.username}`} className="shrink-0">
         <Image
           src={review.user.profilePic || "/default_profile.jpg"}
@@ -38,17 +48,35 @@ export default function ReviewCardForGame({ review }: ReviewCardForGameProps) {
           <h4 className="font-semibold">{review.user.username}</h4>
         </Link>
 
-        <p className="text-sm mt-1 [overflow-wrap:anywhere]">{review.text}</p>
-
-        <p className="text-xs text-gray-500 mt-2">
-          Rating: {review.rating}/10
-          {review.createdAt &&
-            ` • ${new Date(review.createdAt).toLocaleDateString()}`}
+        <p className="text-base mt-1 text-gray-800 break-words">
+          {review.text}
         </p>
-        <div className="absolute bottom-2 right-3 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
-          <Heart size={20} />
+
+        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mt-2">
+          <div className="flex items-center gap-1 text-yellow-500">
+            {Array.from({ length: review.rating }, (_, i) => (
+              <Star key={i} size={16} fill="#FACC15" stroke="none" />
+            ))}
+          </div>
+          <span className="text-gray-600">({review.rating}/10)</span>
+          {formattedDate && (
+            <span className="text-gray-400">• {formattedDate}</span>
+          )}
         </div>
       </div>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="absolute bottom-2 right-3 text-gray-400 hover:text-red-500 transition-colors cursor-not-allowed">
+              <Heart size={20} />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={4}>
+            <p>Like feature coming soon</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }
