@@ -55,13 +55,14 @@ export default function UserLists({
 
   return (
     <div ref={listSectionRef} className="mb-6">
-      <h2 className="text-xl font-semibold mb-2">Create a list</h2>
-
       {isOwner && (
-        <NewListForm
-          userId={userId}
-          onListCreated={() => window.location.reload()}
-        />
+        <>
+          <h2 className="text-xl font-semibold mb-2">Create a list</h2>
+          <NewListForm
+            userId={userId}
+            onListCreated={() => window.location.reload()}
+          />
+        </>
       )}
 
       <h2 className="text-xl font-semibold mb-2">Lists ({total})</h2>

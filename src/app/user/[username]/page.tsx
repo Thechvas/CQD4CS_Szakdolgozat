@@ -8,6 +8,7 @@ import ImageWrapper from "@/components/ImageWrapper";
 import { Pen } from "lucide-react";
 import UserReviews from "@/components/UserReviews";
 import UserLists from "@/components/UserLists";
+import Link from "next/link";
 
 interface UserProfilePageParams {
   params: {
@@ -41,6 +42,8 @@ export default async function UserProfilePage({
   const isFollowing = user.followers.some(
     (follower) => follower.followerId === session?.user?.id
   );
+
+  const isOwner = session?.user?.id === user.id;
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
@@ -81,38 +84,36 @@ export default async function UserProfilePage({
               })}
             </p>
 
-            <p className="text-sm text-gray-500 mt-1">
-              Followers: {user.followers.length} •{" "}
-              {session?.user?.id === user.id ? (
-                <a
-                  href={`/user/${user.username}/following`}
-                  className="text-blue-600 hover:underline"
-                >
-                  Following: {user.following.length}
-                </a>
-              ) : (
-                <>Following: {user.following.length}</>
-              )}
+            <p className="text-sm text-gray-500 mt-1 space-x-2">
+              <Link
+                href={`/user/${user.username}/followers`}
+                className="text-blue-600 hover:underline"
+              >
+                Followers: {user.followers.length}
+              </Link>
+              <span>•</span>
+              <Link
+                href={`/user/${user.username}/following`}
+                className="text-blue-600 hover:underline"
+              >
+                Following: {user.following.length}
+              </Link>
             </p>
           </div>
         </div>
 
-        {session?.user?.id === user.id && (
-          <a
+        {isOwner && (
+          <Link
             href={`/user/${user.username}/edit`}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium transition"
           >
             <Pen className="w-4 h-4" />
             Edit
-          </a>
+          </Link>
         )}
       </div>
 
-      <UserLists
-        username={username}
-        isOwner={session?.user?.id === user.id}
-        userId={user.id}
-      />
+      <UserLists username={username} isOwner={isOwner} userId={user.id} />
 
       <UserReviews username={username} />
     </div>

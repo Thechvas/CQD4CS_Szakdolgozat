@@ -6,22 +6,22 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import FollowButton from "@/components/FollowButton";
 
-interface FollowingPageProps {
+interface FollowersPageProps {
   params: {
     username: string;
   };
 }
 
-export default async function FollowingPage({ params }: FollowingPageProps) {
+export default async function FollowersPage({ params }: FollowersPageProps) {
   const { username } = await params;
   const session = await getServerSession(authOptions);
 
   const user = await prisma.user.findUnique({
     where: { username },
     include: {
-      following: {
+      followers: {
         include: {
-          following: {
+          follower: {
             include: {
               followers: true,
               following: true,
@@ -36,35 +36,35 @@ export default async function FollowingPage({ params }: FollowingPageProps) {
 
   if (!user) return notFound();
 
-  const followingUsers = user.following.map((entry) => entry.following);
+  const followerUsers = user.followers.map((entry) => entry.follower);
 
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">
-        Users followed by {user.username} ({followingUsers.length})
+        Followers of {user.username} ({followerUsers.length})
       </h1>
 
-      {followingUsers.length > 0 ? (
+      {followerUsers.length > 0 ? (
         <ul className="space-y-4">
-          {followingUsers.map((followedUser) => {
+          {followerUsers.map((followerUser) => {
             const isFollowing = session
-              ? followedUser.followers.some(
+              ? followerUser.followers.some(
                   (f) => f.followerId === session.user?.id
                 )
               : false;
 
             return (
               <li
-                key={followedUser.id}
+                key={followerUser.id}
                 className="flex items-center gap-4 bg-white p-4 rounded-xl shadow"
               >
                 <Link
-                  href={`/user/${followedUser.username}`}
+                  href={`/user/${followerUser.username}`}
                   className="w-12 h-12 relative"
                 >
                   <Image
-                    src={followedUser.profilePic || "/default_profile.jpg"}
-                    alt={followedUser.username}
+                    src={followerUser.profilePic || "/default_profile.jpg"}
+                    alt={followerUser.username}
                     fill
                     className="rounded-full object-cover"
                     sizes="48px"
@@ -73,22 +73,22 @@ export default async function FollowingPage({ params }: FollowingPageProps) {
 
                 <div className="flex-1">
                   <Link
-                    href={`/user/${followedUser.username}`}
+                    href={`/user/${followerUser.username}`}
                     className="text-lg font-medium hover:underline"
                   >
-                    {followedUser.username}
+                    {followerUser.username}
                   </Link>
                   <div className="text-sm text-gray-500">
-                    Followers: {followedUser.followers.length} • Following:{" "}
-                    {followedUser.following.length} • Lists:{" "}
-                    {followedUser.lists.length} • Reviews:{" "}
-                    {followedUser.reviews.length}
+                    Followers: {followerUser.followers.length} • Following:{" "}
+                    {followerUser.following.length} • Lists:{" "}
+                    {followerUser.lists.length} • Reviews:{" "}
+                    {followerUser.reviews.length}
                   </div>
                 </div>
 
-                {session?.user?.id && session.user.id !== followedUser.id && (
+                {session?.user?.id && session.user.id !== followerUser.id && (
                   <FollowButton
-                    userId={followedUser.id}
+                    userId={followerUser.id}
                     isFollowingInitial={isFollowing}
                   />
                 )}
@@ -97,9 +97,7 @@ export default async function FollowingPage({ params }: FollowingPageProps) {
           })}
         </ul>
       ) : (
-        <p className="text-gray-500">
-          {user.username} isn’t following anyone yet.
-        </p>
+        <p className="text-gray-500">{user.username} has no followers yet.</p>
       )}
     </div>
   );
