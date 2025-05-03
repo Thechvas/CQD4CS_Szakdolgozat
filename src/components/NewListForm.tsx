@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface NewListFormProps {
   userId: string;
-  onListCreated: () => void;
+  onListCreated?: () => void;
 }
 
 const MAX_NAME_LENGTH = 50;
@@ -18,6 +19,7 @@ export default function NewListForm({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,8 +46,8 @@ export default function NewListForm({
 
       setName("");
       setDescription("");
-      toast.success("List created");
-      onListCreated();
+      router.refresh();
+      onListCreated?.();
     } catch (error) {
       toast.error("Error creating list");
     } finally {
