@@ -40,6 +40,9 @@ export default function ListCard({ list }: ListCardProps) {
     fetchGames();
   }, [list.gameIds]);
 
+  const visibleGames = games.slice(0, 3);
+  const remainingCount = games.length - 3;
+
   return (
     <div className="border p-4 rounded-lg bg-gray-50 shadow-sm flex flex-col gap-3">
       <div className="flex justify-between items-center">
@@ -49,18 +52,29 @@ export default function ListCard({ list }: ListCardProps) {
         </p>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto">
-        {games.length > 0 ? (
-          games.map((game) => (
-            <Link key={game.id} href={`/game/${game.id}`} className="shrink-0">
-              <ImageWrapper
-                src={game.coverUrl}
-                alt={game.name}
-                width={64}
-                height={90}
-              />
-            </Link>
-          ))
+      <div className="flex gap-2 overflow-x-auto items-end">
+        {visibleGames.length > 0 ? (
+          <>
+            {visibleGames.map((game) => (
+              <Link
+                key={game.id}
+                href={`/game/${game.id}`}
+                className="shrink-0"
+              >
+                <ImageWrapper
+                  src={game.coverUrl}
+                  alt={game.name}
+                  width={64}
+                  height={90}
+                />
+              </Link>
+            ))}
+            {remainingCount > 0 && (
+              <div className="text-sm text-gray-500 self-end ml-1">
+                ...and {remainingCount} more
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-gray-400 text-sm">No games yet.</div>
         )}
