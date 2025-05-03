@@ -44,9 +44,9 @@ export default function ListCard({ list }: ListCardProps) {
   const remainingCount = games.length - 3;
 
   return (
-    <div className="border p-4 rounded-lg bg-gray-50 shadow-sm flex flex-col gap-3">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-bold">{list.name}</h3>
+    <div className="border p-4 rounded-lg bg-white shadow-sm flex flex-col gap-4 transition hover:shadow-md">
+      <div className="flex justify-between items-center border-b pb-2">
+        <h3 className="text-lg font-semibold text-gray-800">{list.name}</h3>
         <p className="text-xs text-gray-400">
           {new Date(list.createdAt).toLocaleDateString()}
         </p>
@@ -59,7 +59,7 @@ export default function ListCard({ list }: ListCardProps) {
               <Link
                 key={game.id}
                 href={`/game/${game.id}`}
-                className="shrink-0"
+                className="shrink-0 rounded-md overflow-hidden shadow-sm hover:shadow-md transition"
               >
                 <ImageWrapper
                   src={game.coverUrl}
@@ -81,10 +81,12 @@ export default function ListCard({ list }: ListCardProps) {
       </div>
 
       <div className="flex justify-between items-center mt-2">
-        <p className="text-sm text-gray-600 max-w-[70%]">{list.description}</p>
+        <p className="text-sm text-gray-600 max-w-[70%]">
+          {list.description || "No description available"}
+        </p>
         <Link
           href={`/list/${list.id}`}
-          className="text-blue-500 text-sm hover:underline whitespace-nowrap"
+          className="text-blue-600 text-sm hover:underline whitespace-nowrap"
         >
           See more →
         </Link>

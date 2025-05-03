@@ -9,6 +9,7 @@ interface Review {
   text: string;
   rating: number;
   createdAt: Date;
+  updatedAt: Date;
   gameId: number;
   userId: string;
 }
@@ -66,7 +67,7 @@ export default function UserReviews({ username, reviewsPerPage = 3 }: Props) {
             <button
               onClick={() => changePage(page - 1)}
               disabled={page === 1}
-              className={`p-2 rounded-full border ${
+              className={`p-2 rounded-full border transition ${
                 page === 1
                   ? "text-gray-400 cursor-not-allowed"
                   : "bg-white text-blue-600 hover:bg-blue-100"
@@ -82,7 +83,7 @@ export default function UserReviews({ username, reviewsPerPage = 3 }: Props) {
             <button
               onClick={() => changePage(page + 1)}
               disabled={page === totalPages}
-              className={`p-2 rounded-full border ${
+              className={`p-2 rounded-full border transition ${
                 page === totalPages
                   ? "text-gray-400 cursor-not-allowed"
                   : "bg-white text-blue-600 hover:bg-blue-100"

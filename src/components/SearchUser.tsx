@@ -65,7 +65,7 @@ export default function SearchUser() {
 
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2 rounded-lg transition"
+            className="bg-black hover:bg-black/90 text-white font-medium px-5 py-2 rounded-lg transition"
           >
             Search
           </button>

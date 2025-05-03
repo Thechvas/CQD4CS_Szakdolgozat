@@ -56,57 +56,61 @@ export default function NewListForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4 space-y-3 text-sm">
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="List name"
-          className="w-full border rounded-md p-2 pr-12 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          maxLength={MAX_NAME_LENGTH + 1}
-          required
-        />
-        <span
-          className={`absolute bottom-1 right-2 text-xs ${
-            name.length > MAX_NAME_LENGTH ? "text-red-500" : "text-gray-400"
-          }`}
-        >
-          {name.length}/{MAX_NAME_LENGTH}
-        </span>
-      </div>
+    <form
+      onSubmit={handleSubmit}
+      className="mb-6 space-y-4 bg-white p-4 rounded-md shadow-sm border"
+    >
+      <fieldset disabled={loading} className="space-y-3">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="List name"
+            className="w-full border rounded-md p-2 pr-12 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={MAX_NAME_LENGTH + 1}
+            required
+          />
+          <span
+            className={`absolute bottom-1 right-2 text-xs ${
+              name.length > MAX_NAME_LENGTH ? "text-red-500" : "text-gray-400"
+            }`}
+          >
+            {name.length}/{MAX_NAME_LENGTH}
+          </span>
+        </div>
 
-      <div className="relative">
-        <textarea
-          placeholder="Description (optional)"
-          className="w-full border rounded-md p-2 pr-12 pb-6 resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          maxLength={MAX_DESC_LENGTH + 1}
-          rows={3}
-        />
-        <span
-          className={`absolute bottom-2 right-2 text-xs ${
+        <div className="relative">
+          <textarea
+            placeholder="Description (optional)"
+            className="w-full border rounded-md p-2 pr-12 pb-6 resize-none bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            maxLength={MAX_DESC_LENGTH + 1}
+            rows={3}
+          />
+          <span
+            className={`absolute bottom-2 right-2 text-xs ${
+              description.length > MAX_DESC_LENGTH
+                ? "text-red-500"
+                : "text-gray-400"
+            }`}
+          >
+            {description.length}/{MAX_DESC_LENGTH}
+          </span>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-black hover:bg-black/90 text-white font-medium py-1.5 rounded-md transition duration-200 disabled:opacity-50 text-sm"
+          disabled={
+            name.length > MAX_NAME_LENGTH ||
             description.length > MAX_DESC_LENGTH
-              ? "text-red-500"
-              : "text-gray-400"
-          }`}
+          }
         >
-          {description.length}/{MAX_DESC_LENGTH}
-        </span>
-      </div>
-
-      <button
-        type="submit"
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 rounded-md transition duration-200 disabled:opacity-50 text-sm"
-        disabled={
-          loading ||
-          name.length > MAX_NAME_LENGTH ||
-          description.length > MAX_DESC_LENGTH
-        }
-      >
-        {loading ? "Creating..." : "Create"}
-      </button>
+          {loading ? "Creating..." : "Create"}
+        </button>
+      </fieldset>
     </form>
   );
 }

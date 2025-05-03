@@ -47,7 +47,7 @@ export default async function UserProfilePage({
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 bg-gray-50 p-4 rounded-md shadow-sm">
         <div className="flex items-center gap-4">
           <ImageWrapper
             src={user.profilePic || "/default_profile.jpg"}
