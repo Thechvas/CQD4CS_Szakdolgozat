@@ -13,11 +13,16 @@ export async function DELETE(
 
   const review = await prisma.review.findUnique({
     where: { id: reviewId },
+    select: { userId: true },
   });
 
   if (!review) return new Response("Not Found", { status: 404 });
   if (review.userId !== session.user.id)
     return new Response("Forbidden", { status: 403 });
+
+  await prisma.like.deleteMany({
+    where: { reviewId },
+  });
 
   await prisma.review.delete({
     where: { id: reviewId },

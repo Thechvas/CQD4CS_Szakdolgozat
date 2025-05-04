@@ -20,10 +20,15 @@ export async function POST(req: Request) {
   }
 
   try {
+    let review;
+
     if (reviewId) {
-      await prisma.review.update({
+      review = await prisma.review.update({
         where: { id: reviewId },
         data: { text, rating },
+        include: {
+          user: { select: { username: true, profilePic: true } },
+        },
       });
     } else {
       const existing = await prisma.review.findUnique({
@@ -39,7 +44,7 @@ export async function POST(req: Request) {
         return new Response("You already reviewed this game", { status: 409 });
       }
 
-      await prisma.review.create({
+      review = await prisma.review.create({
         data: {
           text,
           rating,
@@ -48,10 +53,42 @@ export async function POST(req: Request) {
             connect: { email: session.user.email! },
           },
         },
+        include: {
+          user: { select: { username: true, profilePic: true } },
+        },
       });
     }
 
-    return new Response("OK");
+    const fullReview = await prisma.review.findUnique({
+      where: { id: review.id },
+      include: {
+        user: {
+          select: {
+            username: true,
+            profilePic: true,
+          },
+        },
+        _count: {
+          select: { likes: true },
+        },
+        likes: {
+          where: { userId: session.user.id },
+          select: { id: true },
+        },
+      },
+    });
+
+    return new Response(
+      JSON.stringify({
+        ...fullReview,
+        likeCount: fullReview?._count.likes,
+        likedByUser: fullReview ? fullReview.likes.length > 0 : false,
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (err) {
     if (err instanceof PrismaClientKnownRequestError && err.code === "P2002") {
       return new Response("Duplicate review not allowed", { status: 409 });
