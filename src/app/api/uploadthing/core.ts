@@ -8,7 +8,7 @@ const auth = async (req: Request) => {
   try {
     const token = await getToken({ req: req as any });
 
-    console.log("UploadThing session token:", token);
+    console.log("UploadThing session token (PROD):", token);
 
     if (!token) throw new Error("Unauthorized");
     return { id: token.sub };
