@@ -81,7 +81,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
             <h3 className="font-semibold">Unknown Game</h3>
           )}
 
-          <p className="text-base mt-1 text-gray-800 break-words">
+          <p className="text-gray-800 mb-2 whitespace-pre-wrap w-full [overflow-wrap:anywhere]">
             {review.text}
           </p>
 

@@ -53,7 +53,7 @@ export default function ReviewCardForGame({ review }: ReviewCardForGameProps) {
           <h4 className="font-semibold">{review.user.username}</h4>
         </Link>
 
-        <p className="text-base mt-1 text-gray-800 break-words">
+        <p className="text-gray-800 mb-2 whitespace-pre-wrap w-full [overflow-wrap:anywhere]">
           {review.text}
         </p>
 

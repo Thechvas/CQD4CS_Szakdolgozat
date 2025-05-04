@@ -90,7 +90,9 @@ export function CommentSection({ listId }: { listId: string }) {
               )}
             </div>
 
-            <p className="text-gray-800 mb-2">{comment.text}</p>
+            <p className="text-gray-800 mb-2 break-words whitespace-pre-wrap">
+              {comment.text}
+            </p>
 
             <p className="text-xs text-gray-500">
               Posted on {new Date(comment.createdAt).toLocaleDateString()}
