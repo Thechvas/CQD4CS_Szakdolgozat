@@ -8,7 +8,10 @@ export async function POST(req: Request) {
     body = await req.json();
   } catch (err) {
     console.error("❌ Failed to parse JSON body:", err);
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid request body" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -18,12 +21,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    const existingUser = await prisma.user.findUnique({
+    const existingEmail = await prisma.user.findUnique({
       where: { email },
     });
 
-    if (existingUser) {
-      return NextResponse.json({ error: "User already exists" }, { status: 409 });
+    if (existingEmail) {
+      return NextResponse.json(
+        { error: "Email is already registered" },
+        { status: 409 }
+      );
+    }
+
+    const existingUsername = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (existingUsername) {
+      return NextResponse.json(
+        { error: "Username is already taken" },
+        { status: 409 }
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -39,7 +56,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ user: newUser }, { status: 201 });
   } catch (err) {
     console.error("❌ Registration error:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
-

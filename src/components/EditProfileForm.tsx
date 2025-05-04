@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react"; // 🆕 Import useSession
+import { useSession } from "next-auth/react";
 import Select from "react-select";
 import countries from "world-countries";
 import toast from "react-hot-toast";
@@ -25,13 +25,15 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
   const [isClient, setIsClient] = useState(false);
 
   const router = useRouter();
-  const { update } = useSession(); // 🆕 get update function
+  const { update } = useSession();
 
   useEffect(() => setIsClient(true), []);
 
   const validateUsername = (name: string) => {
     if (name.length < 4) return "Username must be at least 4 characters.";
     if (name.length > 20) return "Username must be no more than 20 characters.";
+    if (!/^[a-zA-Z0-9_]+$/.test(name))
+      return "Username can only contain letters, numbers, and underscores.";
     return "";
   };
 
@@ -54,7 +56,7 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
 
     if (result.ok) {
       toast.success("Profile updated!");
-      await update(); // 🆕 Refresh session after successful profile update
+      await update();
       router.push(`/user/${username}`);
       router.refresh();
     } else if (result.status === 409) {
@@ -84,10 +86,9 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
           type="text"
           value={username}
           onChange={(e) => {
-            setUsername(e.target.value);
-            setUsernameError(
-              e.target.value ? validateUsername(e.target.value) : ""
-            );
+            const value = e.target.value;
+            setUsername(value);
+            setUsernameError(value ? validateUsername(value) : "");
           }}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Enter new username"
@@ -139,7 +140,7 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
       <div className="flex justify-center pt-6">
         <button
           type="submit"
-          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 shadow"
+          className="bg-black text-white px-6 py-2 rounded hover:bg-black/90 shadow"
         >
           Save Changes
         </button>

@@ -19,6 +19,7 @@ export default function JoinPage() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -30,6 +31,8 @@ export default function JoinPage() {
     if (name.length < 4) return "Username must be at least 4 characters long.";
     if (name.length > 20)
       return "Username must be no more than 20 characters long.";
+    if (!/^[a-zA-Z0-9_]+$/.test(name))
+      return "Username can only contain letters, numbers, and underscores.";
     return "";
   };
 
@@ -57,9 +60,12 @@ export default function JoinPage() {
 
     setUsernameError(usernameValidation);
     if (!isEmailValid) setEmailError("Please enter a valid email address.");
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      setPasswordError("Passwords do not match.");
       return;
+    } else {
+      setPasswordError("");
     }
 
     if (!usernameValidation && isEmailValid) {
@@ -72,6 +78,14 @@ export default function JoinPage() {
       const data = await res.json();
       if (res.ok) {
         router.push("/login");
+      } else if (res.status === 409) {
+        if (data.error.includes("Username")) {
+          setUsernameError(data.error);
+        } else if (data.error.includes("Email")) {
+          setEmailError(data.error);
+        } else {
+          alert(data.error || "Something went wrong.");
+        }
       } else {
         alert(data.error || "Something went wrong.");
       }
@@ -162,7 +176,10 @@ export default function JoinPage() {
                   type={showConfirmPassword ? "text" : "password"}
                   id="confirmPassword"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    setPasswordError("");
+                  }}
                   placeholder="Re-enter password"
                   required
                   className="pr-10"
@@ -179,6 +196,9 @@ export default function JoinPage() {
                   )}
                 </button>
               </div>
+              {passwordError && (
+                <p className="text-sm text-red-500 mt-1">{passwordError}</p>
+              )}
             </div>
 
             <Button type="submit" className="w-full mt-4">
