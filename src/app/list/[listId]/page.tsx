@@ -55,14 +55,6 @@ export default async function ListPage({
         }))
       : [];
 
-  const comments = await prisma.comment.findMany({
-    where: { listId },
-    orderBy: { createdAt: "desc" },
-    include: {
-      user: { select: { username: true, profilePic: true } },
-    },
-  });
-
   return (
     <main className="p-6 max-w-6xl mx-auto space-y-8">
       <div className="flex justify-between items-start">
@@ -130,7 +122,7 @@ export default async function ListPage({
           )}
         </div>
       )}
-      <CommentSection listId={list.id} initialComments={comments} />
+      <CommentSection listId={list.id} />
     </main>
   );
 }

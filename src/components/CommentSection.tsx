@@ -1,19 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
-export function CommentSection({
-  listId,
-  initialComments,
-}: {
-  listId: string;
-  initialComments: any[];
-}) {
+export function CommentSection({ listId }: { listId: string }) {
   const { data: session } = useSession();
-  const [comments, setComments] = useState(initialComments);
+  const [comments, setComments] = useState<any[]>([]);
   const [text, setText] = useState("");
+
+  const fetchComments = async () => {
+    const res = await fetch(`/api/comments/list?listId=${listId}`);
+    const data = await res.json();
+    setComments(data);
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
 
   const postComment = async () => {
     if (!text.trim()) return;
@@ -22,14 +27,15 @@ export function CommentSection({
       body: JSON.stringify({ text, listId }),
       headers: { "Content-Type": "application/json" },
     });
-    const newComment = await res.json();
-    setComments([newComment, ...comments]);
-    setText("");
+    if (res.ok) {
+      setText("");
+      fetchComments(); // refresh comments after posting
+    }
   };
 
   const deleteComment = async (id: string) => {
     await fetch(`/api/comments?id=${id}`, { method: "DELETE" });
-    setComments(comments.filter((c) => c.id !== id));
+    fetchComments();
   };
 
   return (
@@ -59,30 +65,36 @@ export function CommentSection({
       <div className="space-y-6">
         {comments.map((comment) => (
           <div key={comment.id} className="border-b pb-4">
-            <div className="flex items-center gap-3 mb-2">
-              <Image
-                src={comment.user.profilePic || "/default_profile.jpg"}
-                alt="User"
-                width={32}
-                height={32}
-                className="rounded-full object-cover"
-              />
-              <div>
-                <p className="font-medium">{comment.user.username}</p>
-                <p className="text-xs text-gray-500">
-                  Posted on {new Date(comment.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-            <p className="text-gray-800">{comment.text}</p>
-            {session?.user.username === comment.user.username && (
-              <button
-                onClick={() => deleteComment(comment.id)}
-                className="text-red-500 text-sm mt-1 hover:underline"
+            <div className="flex justify-between items-start mb-2">
+              <Link
+                href={`/user/${comment.user.username}`}
+                className="flex items-center gap-3 hover:underline"
               >
-                Delete
-              </button>
-            )}
+                <Image
+                  src={comment.user.profilePic || "/default_profile.jpg"}
+                  alt={comment.user.username}
+                  width={32}
+                  height={32}
+                  className="rounded-full object-cover"
+                />
+                <p className="font-medium">{comment.user.username}</p>
+              </Link>
+
+              {session?.user.username === comment.user.username && (
+                <button
+                  onClick={() => deleteComment(comment.id)}
+                  className="text-red-500 text-sm hover:underline"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+
+            <p className="text-gray-800 mb-2">{comment.text}</p>
+
+            <p className="text-xs text-gray-500">
+              Posted on {new Date(comment.createdAt).toLocaleDateString()}
+            </p>
           </div>
         ))}
       </div>
