@@ -10,12 +10,9 @@ import RemoveGameFromListButton from "@/components/RemoveGameFromListButton";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { Key } from "react";
 import { CommentSection } from "@/components/CommentSection";
+import { PageProps } from "@/types";
 
-export default async function ListPage({
-  params,
-}: {
-  params: { listId: string };
-}) {
+export default async function ListPage({ params }: PageProps) {
   const { listId } = await params;
   const session = await getServerSession(authOptions);
 

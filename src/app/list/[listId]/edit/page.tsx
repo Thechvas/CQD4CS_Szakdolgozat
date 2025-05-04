@@ -3,12 +3,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import EditListForm from "@/components/EditListForm";
+import { PageProps } from "@/types";
 
 interface Props {
   params: { listId: string };
 }
 
-export default async function EditListPage({ params }: Props) {
+export default async function EditListPage({ params }: PageProps) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/api/auth/signin");
 

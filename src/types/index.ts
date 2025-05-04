@@ -16,3 +16,15 @@ export interface IGDBGame {
     };
   }[];
 }
+
+export type SegmentParams<T extends object = any> = T extends Record<
+  string,
+  any
+>
+  ? { [K in keyof T]: string | string[] | undefined }
+  : T;
+
+export interface PageProps {
+  params: SegmentParams;
+  searchParams?: any;
+}

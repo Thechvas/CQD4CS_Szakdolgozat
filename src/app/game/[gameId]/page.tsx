@@ -5,15 +5,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import GameDetails from "@/components/GameDetails";
 import ReviewCardForGame from "@/components/ReviewCardForGame";
-import { IGDBGame } from "@/types";
+import { IGDBGame, PageProps } from "@/types";
 import ReviewFormForGameWrapper from "@/components/ReviewFormForGameWrapper";
 import AddToList from "@/components/AddToList";
 
-export default async function GamePage({
-  params,
-}: {
-  params: { gameId: string };
-}) {
+export default async function GamePage({ params }: PageProps) {
   const { gameId } = await params;
 
   const data: IGDBGame[] = await fetchFromIGDB(

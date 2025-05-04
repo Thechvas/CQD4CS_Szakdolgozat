@@ -3,16 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import EditProfileForm from "@/components/EditProfileForm";
+import { PageProps } from "@/types";
 
-interface EditProfilePageParams {
-  params: {
-    username: string;
-  };
-}
-
-export default async function EditProfilePage({
-  params,
-}: EditProfilePageParams) {
+export default async function EditProfilePage({ params }: PageProps) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/api/auth/signin");
 

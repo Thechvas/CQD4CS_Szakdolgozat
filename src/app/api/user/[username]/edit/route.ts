@@ -5,13 +5,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { username: string } }
+  context: { params: Promise<{ username: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { username } = await params;
+  const { username } = await context.params;
 
   const formData = await req.formData();
   const newUsername = formData.get("username") as string | null;

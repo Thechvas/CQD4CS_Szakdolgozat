@@ -4,12 +4,12 @@ import { authOptions } from "@/lib/auth";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { reviewId: string } }
+  context: { params: Promise<{ reviewId: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return new Response("Unauthorized", { status: 401 });
 
-  const { reviewId } = await params;
+  const { reviewId } = await context.params;
 
   const review = await prisma.review.findUnique({
     where: { id: reviewId },

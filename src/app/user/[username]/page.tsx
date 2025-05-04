@@ -9,16 +9,9 @@ import { Pen } from "lucide-react";
 import UserReviews from "@/components/UserReviews";
 import UserLists from "@/components/UserLists";
 import Link from "next/link";
+import { PageProps } from "@/types";
 
-interface UserProfilePageParams {
-  params: {
-    username: string;
-  };
-}
-
-export default async function UserProfilePage({
-  params,
-}: UserProfilePageParams) {
+export default async function UserProfilePage({ params }: PageProps) {
   const { username } = await params;
 
   const session = await getServerSession(authOptions);

@@ -5,10 +5,11 @@ import { NextResponse } from "next/server";
 
 export async function PUT(
   req: Request,
-  { params }: { params: { listId: string } }
+  context: { params: Promise<{ listId: string }> }
 ) {
-  const { listId } = await params;
+  const { listId } = await context.params;
   const session = await getServerSession(authOptions);
+
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

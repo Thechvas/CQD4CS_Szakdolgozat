@@ -5,14 +5,9 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import FollowButton from "@/components/FollowButton";
+import { PageProps } from "@/types";
 
-interface FollowersPageProps {
-  params: {
-    username: string;
-  };
-}
-
-export default async function FollowersPage({ params }: FollowersPageProps) {
+export default async function FollowersPage({ params }: PageProps) {
   const { username } = await params;
   const session = await getServerSession(authOptions);
 
