@@ -6,7 +6,7 @@ import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
-  title: "Game Catalogue",
+  title: "GameVault",
   description: "Discover and track your favorite video games",
 };
 

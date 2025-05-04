@@ -80,11 +80,17 @@ export default function AddToList({ gameId }: AddToListProps) {
             <SelectValue placeholder="Select a list" />
           </SelectTrigger>
           <SelectContent>
-            {lists.map((list) => (
-              <SelectItem key={list.id} value={list.id}>
-                {list.name}
+            {lists.length === 0 ? (
+              <SelectItem value="none" disabled>
+                Create a list on your profile page
               </SelectItem>
-            ))}
+            ) : (
+              lists.map((list) => (
+                <SelectItem key={list.id} value={list.id}>
+                  {list.name}
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
 

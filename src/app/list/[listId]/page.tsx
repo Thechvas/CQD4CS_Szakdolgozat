@@ -56,8 +56,12 @@ export default async function ListPage({ params }: PageProps) {
     <main className="p-6 max-w-6xl mx-auto space-y-8">
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-4xl font-bold mb-2">{list.name}</h1>
-          <p className="text-gray-700 text-lg">{list.description}</p>
+          <h1 className="text-4xl font-bold mb-2 whitespace-pre-wrap w-full [overflow-wrap:anywhere]">
+            {list.name}
+          </h1>
+          <p className="text-gray-700 text-lg whitespace-pre-wrap w-full [overflow-wrap:anywhere]">
+            {list.description}
+          </p>
         </div>
         <div className="flex flex-col items-end text-sm text-gray-600">
           {isOwner && (

@@ -55,25 +55,28 @@ export default function ListCard({ list }: ListCardProps) {
   return (
     <div className="border p-4 rounded-lg bg-white shadow-sm flex flex-col gap-4 transition hover:shadow-md">
       <div className="flex justify-between items-start mb-2">
-        <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold">{list.name}</h3>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link href={`/list/${list.id}`}>
-                  <div className="flex items-center gap-1 text-sm text-gray-500 hover:text-blue-600 transition">
-                    <MessageSquareMore className="w-4 h-4" />
-                    <span>{list.comments.length}</span>
-                  </div>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>Comments</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+        <div className="flex-1">
+          <div className="text-lg font-semibold whitespace-pre-wrap [overflow-wrap:anywhere]">
+            <span>
+              {list.name}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link href={`/list/${list.id}`}>
+                      <span className="inline-flex items-center gap-1 ml-2 text-sm text-gray-500 hover:text-blue-600 transition align-baseline">
+                        <MessageSquareMore className="w-4 h-4" />
+                        <span>{list.comments.length}</span>
+                      </span>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>Comments</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </span>
+          </div>
         </div>
 
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-400 whitespace-nowrap">
           {new Date(list.createdAt).toLocaleDateString()}
         </p>
       </div>
@@ -107,7 +110,7 @@ export default function ListCard({ list }: ListCardProps) {
       </div>
 
       <div className="flex justify-between items-center mt-2">
-        <p className="text-sm text-gray-600 max-w-[70%]">
+        <p className="text-sm text-gray-600 max-w-[70%] whitespace-pre-wrap [overflow-wrap:anywhere]">
           {list.description || "No description available"}
         </p>
         <Link
