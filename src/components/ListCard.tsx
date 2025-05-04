@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ImageWrapper from "./ImageWrapper";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { MessageSquareMore } from "lucide-react";
 
 interface ListCardProps {
   list: {
@@ -11,6 +18,9 @@ interface ListCardProps {
     description: string;
     createdAt: string;
     gameIds: number[];
+    comments: {
+      text: string;
+    }[];
   };
 }
 
@@ -42,11 +52,27 @@ export default function ListCard({ list }: ListCardProps) {
 
   const visibleGames = games.slice(0, 3);
   const remainingCount = games.length - 3;
-
   return (
     <div className="border p-4 rounded-lg bg-white shadow-sm flex flex-col gap-4 transition hover:shadow-md">
-      <div className="flex justify-between items-center border-b pb-2">
-        <h3 className="text-lg font-semibold text-gray-800">{list.name}</h3>
+      <div className="flex justify-between items-start mb-2">
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-semibold">{list.name}</h3>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href={`/list/${list.id}`}>
+                  <div className="flex items-center gap-1 text-sm text-gray-500 hover:text-blue-600 transition">
+                    <MessageSquareMore className="w-4 h-4" />
+                    <span>{list.comments.length}</span>
+                  </div>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>Comments</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
         <p className="text-xs text-gray-400">
           {new Date(list.createdAt).toLocaleDateString()}
         </p>

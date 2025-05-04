@@ -27,6 +27,9 @@ export async function GET(
     orderBy: { createdAt: "desc" },
     skip: (page - 1) * perPage,
     take: perPage,
+    include: {
+      comments: true,
+    },
   });
 
   return NextResponse.json({ lists, total });

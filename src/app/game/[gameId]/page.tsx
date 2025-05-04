@@ -55,6 +55,12 @@ export default async function GamePage({
     },
   });
 
+  const totalReviewCount = await prisma.review.count({
+    where: {
+      gameId: Number(gameId),
+    },
+  });
+
   return (
     <div className="max-w-6xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg space-y-10">
       <div className="space-y-6">
@@ -69,7 +75,9 @@ export default async function GamePage({
       )}
 
       <div>
-        <h2 className="text-xl font-semibold mb-2">User Reviews</h2>
+        <h2 className="text-xl font-semibold mb-2">
+          User Reviews ({totalReviewCount})
+        </h2>
         {reviews.length > 0 ? (
           <ul className="space-y-4">
             {reviews.map((review) => (

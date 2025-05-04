@@ -11,6 +11,9 @@ interface List {
   description: string;
   createdAt: string;
   gameIds: number[];
+  comments: {
+    text: string;
+  }[];
 }
 
 interface Props {
