@@ -9,6 +9,7 @@ import { ListActions } from "@/components/ListActions";
 import RemoveGameFromListButton from "@/components/RemoveGameFromListButton";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { Key } from "react";
+import { CommentSection } from "@/components/CommentSection";
 
 export default async function ListPage({
   params,
@@ -53,6 +54,14 @@ export default async function ListPage({
             : "/default_game_cover.jpg",
         }))
       : [];
+
+  const comments = await prisma.comment.findMany({
+    where: { listId },
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: { select: { username: true, profilePic: true } },
+    },
+  });
 
   return (
     <main className="p-6 max-w-6xl mx-auto space-y-8">
@@ -121,6 +130,7 @@ export default async function ListPage({
           )}
         </div>
       )}
+      <CommentSection listId={list.id} initialComments={comments} />
     </main>
   );
 }

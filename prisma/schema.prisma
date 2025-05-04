@@ -18,8 +18,9 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  reviews Review[]
-  lists   List[]
+  reviews  Review[]
+  lists    List[]
+  comments Comment[]
 
   followers Follows[] @relation("following")
   following Follows[] @relation("follower")
@@ -48,6 +49,8 @@ model List {
   user   User   @relation(fields: [userId], references: [id])
 
   gameIds Int[]
+
+  comments Comment[]
 }
 
 model Follows {
@@ -60,4 +63,17 @@ model Follows {
 
   @@id([followerId, followingId])
   @@index([followerId, followingId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  listId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  list List @relation(fields: [listId], references: [id], onDelete: Cascade)
 }

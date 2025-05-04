@@ -153,6 +153,15 @@ exports.Prisma.FollowsScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  text: 'text',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId',
+  listId: 'listId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -173,7 +182,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Review: 'Review',
   List: 'List',
-  Follows: 'Follows'
+  Follows: 'Follows',
+  Comment: 'Comment'
 };
 
 /**
