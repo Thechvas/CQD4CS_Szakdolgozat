@@ -3,6 +3,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { UploadButton } from "@/lib/uploadthing";
+import { Loader2 } from "lucide-react";
 
 interface ProfilePictureUploadProps {
   value: string;
@@ -14,6 +15,7 @@ export default function ProfilePictureUpload({
   onChange,
 }: ProfilePictureUploadProps) {
   const [progress, setProgress] = useState(0);
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   const handleRemove = () => {
     onChange("");
@@ -27,12 +29,21 @@ export default function ProfilePictureUpload({
       </label>
 
       {value ? (
-        <div className="flex flex-col items-center space-y-2">
-          <img
-            src={value}
-            alt="Profile"
-            className="w-24 h-24 rounded-full object-cover border shadow"
-          />
+        <div className="relative flex flex-col items-center space-y-2">
+          <div className="w-24 h-24 relative">
+            {isImageLoading && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 rounded-full">
+                <Loader2 className="h-5 w-5 animate-spin text-gray-600" />
+              </div>
+            )}
+            <img
+              src={value}
+              alt="Profile"
+              onLoad={() => setIsImageLoading(false)}
+              onError={() => setIsImageLoading(false)}
+              className="w-24 h-24 rounded-full object-cover border shadow"
+            />
+          </div>
           <button
             type="button"
             onClick={handleRemove}
@@ -45,7 +56,10 @@ export default function ProfilePictureUpload({
         <div className="rounded-lg border-2 border-dashed border-gray-300 p-6 bg-gray-50 hover:bg-gray-100 transition-all text-center">
           <UploadButton
             endpoint="imageUploader"
-            onUploadProgress={(p) => setProgress(p)}
+            onUploadProgress={(p) => {
+              setProgress(p);
+              if (p === 100) setIsImageLoading(true);
+            }}
             appearance={{
               container: "uploadthing-hidden-input w-full flex justify-center",
               button: "bg-transparent p-0 border-none shadow-none w-full",

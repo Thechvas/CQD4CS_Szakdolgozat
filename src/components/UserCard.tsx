@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import FollowButton from "@/components/FollowButton";
 import { useSession } from "next-auth/react";
+import ProfilePictureImageWrapper from "./ProfilePictureImageWrapper";
 
 type UserCardProps = {
   user: {
@@ -38,12 +39,12 @@ export default function UserCard({
       )}
 
       <Link href={`/user/${user.username}`} className="w-16 h-16 relative">
-        <Image
+        <ProfilePictureImageWrapper
           src={user.profilePic || "/default_profile.jpg"}
           alt={user.username}
-          fill
-          className="rounded-full object-cover"
-          sizes="64px"
+          width={64}
+          height={64}
+          className="rounded-full object-cover border shadow"
         />
       </Link>
 

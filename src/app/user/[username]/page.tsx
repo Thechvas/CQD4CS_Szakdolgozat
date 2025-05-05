@@ -4,12 +4,12 @@ import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import FollowButton from "@/components/FollowButton";
 import UserCountry from "@/components/UserCountry";
-import ImageWrapper from "@/components/ImageWrapper";
 import { Pen } from "lucide-react";
 import UserReviews from "@/components/UserReviews";
 import UserLists from "@/components/UserLists";
 import Link from "next/link";
 import { PageProps } from "@/types";
+import ProfilePictureImageWrapper from "@/components/ProfilePictureImageWrapper";
 
 export default async function UserProfilePage({ params }: PageProps) {
   const { username } = await params;
@@ -42,12 +42,14 @@ export default async function UserProfilePage({ params }: PageProps) {
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 bg-gray-50 p-4 rounded-md shadow-sm">
         <div className="flex items-center gap-4">
-          <ImageWrapper
+          <ProfilePictureImageWrapper
             src={user.profilePic || "/default_profile.jpg"}
             alt="Profile picture"
-            width={64}
-            height={64}
+            width={96}
+            height={96}
+            className="rounded-full object-cover border shadow"
           />
+
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold">{user.username}</h1>
