@@ -26,7 +26,6 @@ describe("igdb.ts", () => {
   });
 
   it("should return cached token if valid", async () => {
-    // First call to get token and fetch
     global.fetch = jest
       .fn()
       .mockResolvedValueOnce({
@@ -37,7 +36,6 @@ describe("igdb.ts", () => {
         ok: true,
         json: async () => [{ id: 1 }],
       })
-      // This is the second API call using cached token
       .mockResolvedValueOnce({
         ok: true,
         json: async () => [{ id: 1 }],
@@ -48,7 +46,7 @@ describe("igdb.ts", () => {
     const second = await fetchFromIGDB("games", "fields name;");
 
     expect(second).toEqual([{ id: 1 }]);
-    expect(global.fetch).toHaveBeenCalledTimes(3); // 1 token + 2 game calls
+    expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 
   it("should throw if access token fetch fails", async () => {

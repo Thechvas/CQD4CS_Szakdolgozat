@@ -2,7 +2,7 @@ describe("config.ts", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
-    jest.resetModules(); // Clear module cache
+    jest.resetModules();
     process.env = { ...originalEnv };
   });
 
