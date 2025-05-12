@@ -71,12 +71,7 @@ export default async function UserProfilePage({ params }: PageProps) {
             )}
 
             <p className="text-sm text-gray-500 mt-1">
-              Member since:{" "}
-              {new Date(user.createdAt).toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-              })}
+              Member since: {new Date(user.createdAt).toLocaleDateString()}
             </p>
 
             <p className="text-sm text-gray-500 mt-1 space-x-2">
