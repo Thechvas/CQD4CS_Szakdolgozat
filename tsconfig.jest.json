@@ -1,11 +1,16 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "node",
-    "noEmit": true,
+    "target": "ES2017",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "types": ["jest"]
-  }
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "isolatedModules": false,
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*", "tests/**/*"]
 }
